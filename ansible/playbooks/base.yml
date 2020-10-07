@@ -1,0 +1,28 @@
+---
+- name: Do all configuration tasks
+  hosts: all
+  gather_facts: no
+  tasks:
+  - name: Linux - Install Default Packages
+    apt:
+      name:
+        - acl
+        - ca-certificates
+        - curl
+        - git
+        - htop
+        - libcurl4
+        - libwww-perl
+        - openssh-server
+        - openssl
+        - screen
+        - unzip
+        - vim
+        - wget
+        - whois
+      state: present
+      update_cache: yes
+      autoremove: yes
+      cache_valid_time: 3600
+      install_recommends: no
+    become: yes

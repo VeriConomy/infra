@@ -1,0 +1,5 @@
+---
+- name: Do all configuration tasks
+  hosts: all
+  gather_facts: no
+  pre_tasks:
