@@ -26,3 +26,18 @@
       cache_valid_time: 3600
       install_recommends: no
     become: yes
+
+  - name: Copy systemd DNS config
+    template:
+      src: "../templates/resolved.conf.j2"
+      dest: "/etc/systemd/resolved.conf"
+      owner: root
+      group: root
+      mode: "0644"
+    register: resolved_tmpl
+
+  - name: restart DNS service
+    systemd:
+      state: restarted
+      name: systemd-sysctl
+    when: resolved_tmpl.changed
