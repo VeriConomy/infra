@@ -1,0 +1,43 @@
+---
+# The Full role need to be executed in "become"
+ansible_become: yes
+
+# List of variables required for the run of that playbooks
+required_vars:
+  - rkhunter_report_email
+
+
+# /etc/default/rkhunter.conf
+rkhunter_cron_daily_run: true
+rkhunter_cron_db_update: true
+rkhunter_db_update_email: false
+rkhunter_apt_autogen: true
+
+# /etc/rkhunter.conf
+rkhunter_mail_on_warning: root
+rkhunter_mail_cmd: 'mail -s "[rkhunter] Warnings found for ${HOST_NAME}"'
+rkhunter_bindir: "{{ ansible_env.PATH | replace(':',' ')}}"
+rkhunter_use_syslog: authpriv.warning
+
+rkhunter_allow_ssh_root_user: 'no'
+rkhunter_allow_ssh_prot_v1: 0
+rkhunter_ssh_config_dir: /etc/ssh
+
+rkhunter_enable_tests: ALL
+rkhunter_disable_tests: suspscan hidden_ports hidden_procs deleted_files packet_cap_apps apps
+
+rkhunter_scriptwhitelist:
+  - /bin/egrep
+  - /bin/fgrep
+  - /bin/which
+  - /usr/bin/ldd
+  - /usr/sbin/adduser
+
+rkhunter_allowhiddendir: []
+rkhunter_allowhiddenfile: []
+rkhunter_allowproclisten: []
+
+rkhunter_allow_syslog_remote_logging: 1
+
+rkhunter_port_whitelist: []
+rkhunter_port_path_whitelist: []

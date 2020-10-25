@@ -1,0 +1,3 @@
+---
+- name: launch propupd
+  command: rkhunter --propupd

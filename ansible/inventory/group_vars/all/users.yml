@@ -1,0 +1,28 @@
+# List of users and their pub keys
+# For bastion, first generate user, connect to generate pubkey and add them here
+users:
+  ansible:
+    shell: /bin/bash
+    groups: "sudo"
+    state: present
+    pubkeys:
+      - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOsaOsAj2x/NoydspopPPGsMKBu+F/hfHaNf2/AWaM4E ansible@deploy"
+  bastion:
+    shell: /bin/bash
+    groups: "sudo"
+    state: present
+  mderasse:
+    state: absent
+    bastionpubkeys:
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCzqKVxAfhKiREbdZo2fZ/z55LJd9DYFOki0DFN/h7wYGoaS46Aipqy6YOjmyDkJWyYW4UIkwWE3MgK65z1Azs46yFrUfmk+Iyl6gvi8aZVw5BusAO88+vu4JlPYlFUNrvU+XT2l1Sq0o2gjC7EfjXIaXic5PwTmXSfjBfzVZ2zgTMzYE94Y5YVdud+Lv0n11UGTakvR2OYXFKDg0qV3PjanbcRXSAAmjbEMJBZzDjTV+AYFat2myD75INR02kWIv9kcySQ4QvEXIWQPpuy+5zezfNo4GtObSy82bjs4hn1eqzzAvQXhIvvd1/uKGQzmDo1gm6tqE6pA2IEQuuzUt8Ee5YPAZo2cRBm2+cAbZnBrUoXOESoxIRl8R61p8bTKYyfLR9CWivgIYk4Hl54rqxRYq4j6mlSG+sgbGSGQCEKqV1ffoSL1tlz804VGWKYY9YU2CLyDxAZr9mDTQRO9Al/UA8jOWiSf5UegqM69MYlUzvtKo+scMRb1oJNpr5yeU5H4nijIQqmx8ks4Fc+JVyeU1HgNpvvPcyMnCucE2UAuAZbI7QhrA+eDX6g3vaZ5NdlKQbDutgKTNn5zIPGId3Tqz1pKPpujOW/Jo4CWFUpX3SVI8y0laXRSk2lPdSzySDubZHx2aU9XjGVE5sAdVlASiRhN1Pipuqov6SUVTCScQ== mderasse@bastion"
+  calvario:
+    state: absent
+    bastionpubkeys:
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDprQ6uPtg9cU8agIE8kjTcALDPmWw5b3TXDN8J++FG7AauywMhc7sdF15/vYFqIau2Mqw59A8N9ZqQuefhM3J3wjhHq0FAlD41etmZgvGcYHztDxbqOeARVFKVv+GM74RTX4a+vg5/pmWxZmfjNrQrQt7KpZsVIKXiBuhRQt3qA3Dk2xWv6xGD/k3u6SkUs3roHSCQb9SHxPlpoFd1uMb9J0bEc29NSYVWvZKChyEckbnNU6pvXBuMC5w6lrh7+JoWTP8XXxwkUu8TjgkHkUoAjZ14cJLSfqOFFAv2RxeSRPhZnzvRKMdcBJjqday3fJ6SCCPXiJb4No4bjcWjcjcguuzYQg1lz/4h4ywHFoxFo4bch8hO4yN+6899Va5DKlv2YVTEX2XmvmXFKRwjnKaCsSLuf8Xro4e9ESf6UH7mt28R98SiEv2ls8LG0wwHuqWAdlGiXMp+gKHVSmParlJbEWqKkGsWsPE36VTQb2LHApLcPiMFXptbwuaBhPBY+xYwpROAwLCoDvpTu32Y+N19g8DDGCqWLJJEAo8OQ4ML1W1wgP9XXSx/Fq7GTW8jL+Y64Wt/+m2/Cpv78Xo+kbvsyXiDQIkD30MeN5cLIP8S3uPSRuY4FC7qsf0JF0b8g1JZqjrZGFaXw+veKKlXRFNA9LV0AdzQFQs5V4TYA6AGUQ== calvario@bastion"
+
+# List of user that can access to server behind bastion
+# That list need to be overide for each host if we want to have special access
+allow_users:
+  - mderasse
+  - calvario
+

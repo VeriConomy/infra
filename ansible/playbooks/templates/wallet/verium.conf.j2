@@ -1,0 +1,12 @@
+server=1
+listen=1
+daemon=1
+port={{ wallet_port | default(36988) }}
+
+rpcuser={{ wallet_username }}
+rpcpassword={{ wallet_password }}
+rpcallowip=127.0.0.1
+
+{% for node in node_list %}
+addnode={{ node }}
+{% endfor %}

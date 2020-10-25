@@ -1,0 +1,39 @@
+---
+- name: Install bastion server
+  hosts: bastions
+  become: yes
+  tasks:
+    - name: Bastion Server - Install TG Dependencies
+      apt:
+        name: "{{ packages }}"
+        update_cache: yes
+        autoremove: yes
+        cache_valid_time: 3600
+        install_recommends: no
+        state: latest
+      vars:
+        packages:
+          - git
+          - libjson-perl
+          - libemail-mime-perl
+          - libdatetime-perl
+          - libemail-sender-perl
+          - libemail-mime-creator-perl
+          - libjson-xs-perl
+          - libwww-perl
+          - screen
+          - libconvert-base32-perl
+          - libauthen-oath-perl
+
+    - name: Bastion Server - Install TG from git repository
+      git:
+        repo: https://github.com/root-gg/tg.git
+        dest: /opt/tg
+        force: yes
+    
+    - name: Bastion Server - Change TG permission
+      file:
+        path: /opt/tg
+        recurse: yes
+        state: directory
+        mode: 0755

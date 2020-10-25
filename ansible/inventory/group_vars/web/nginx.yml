@@ -1,0 +1,50 @@
+# Nginx Config
+nginx_install_from: source
+nginx_main_template_enable: true
+nginx_main_template:
+  template_file: nginx.conf.j2
+  conf_file_name: nginx.conf
+  conf_file_location: /etc/nginx/
+  user: www-data
+  worker_processes: auto
+  worker_rlimit_nofile: 500000
+  error_log:
+    location: /var/log/nginx/error.log
+    level: warn
+  worker_connections: 1024
+  http_enable: true
+  http_settings:
+    access_log_format:
+      - name: main
+        format: |-
+          '$remote_addr - $remote_user [$time_local] "$request" '
+          '$status $body_bytes_sent "$http_referer" '
+          '"$http_user_agent" "$http_x_forwarded_for"'
+    access_log_location:
+     - name: main
+       location: /var/log/nginx/access.log
+    keepalive_timeout: 65
+    cache: false
+    rate_limit: true
+    keyval: false
+  http_global_autoindex: false
+  http_custom_options:
+    - "proxy_buffers 16 16k"
+    - "proxy_buffer_size 16k"
+    - "client_max_body_size 1000m"
+    - "set_real_ip_from 10.0.0.2"
+    - "real_ip_header    X-Forwarded-For"
+    - "gzip on"
+    - "gzip_comp_level 5"
+    - "gzip_min_length 256"
+    - "gzip_proxied any"
+    - "gzip_vary on"
+    - "gzip_types application/atom+xml application/javascript application/json application/ld+json application/manifest+json application/rss+xml application/vnd.geo+json application/vnd.ms-fontobject application/x-font-ttf application/x-web-app-manifest+json application/xhtml+xml application/xml font/opentype image/bmp image/svg+xml image/x-icon text/cache-manifest text/css text/plain text/vcard text/vnd.rim.location.xloc text/vtt text/x-component text/x-cross-domain-policy"
+  stream_enable: true
+  stream_custom_options:
+    - "log_format basic '$remote_addr [$time_local] '
+            '$protocol $status $bytes_sent $bytes_received '
+            '$session_time'"
+    - "access_log  /var/log/nginx/stream-access.log basic"
+    - "error_log  /var/log/nginx/stream-error.log error"
+

@@ -1,0 +1,7 @@
+# Certbot Config
+# Nothing host specific here !!
+certbot_install_from_source: false
+certbot_create_if_missing: true
+certbot_auto_renew_user: root
+certbot_admin_email: infra+letsencrypt@vericonomy.com
+

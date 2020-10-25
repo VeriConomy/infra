@@ -1,0 +1,143 @@
+#!/bin/bash
+
+# No spoofing.
+if [ -e /proc/sys/net/ipv4/conf/all/rp_filter ]
+then
+for filter in /proc/sys/net/ipv4/conf/*/rp_filter
+do
+echo 1 > $filter
+done
+fi
+
+# Clean All Rules
+{% if ansible_facts.services['docker'] is defined or firewall_docker_mode %}
+iptables -F INPUT
+iptables -F OUTPUT
+{% else %}
+iptables -F
+iptables -t nat -F
+{% endif %}
+iptables -X
+iptables -t nat -X
+iptables -t mangle -F
+iptables -t mangle -X
+
+# Let's keep current connection
+iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+# ---------- Basic Policies ---------- 
+# Apply default policies
+iptables -P INPUT {{ firewall_default_input }}
+iptables -P FORWARD {{ firewall_default_forward }}
+iptables -P OUTPUT {{ firewall_default_output }}
+
+
+# Let's keep current connection
+iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+# Accept traffic from loopback interface (localhost).
+iptables -t filter -A INPUT -i lo -j ACCEPT
+iptables -t filter -A OUTPUT -o lo -j ACCEPT
+
+# ---------- ICMP ----------
+{% if firewall_icmp_accept and firewall_icmp_limit == 0 %}
+iptables -t filter -A INPUT -p icmp -j ACCEPT
+{% elif firewall_icmp_accept and firewall_icmp_limit != 0 %}
+iptables -t filter -A INPUT -p icmp -m limit --limit {{ firewall_icmp_limit }}/second -j ACCEPT
+{% endif %}
+iptables -t filter -A OUTPUT -p icmp -j ACCEPT
+
+# ---------- IP WhiteList ----------
+## INPUT
+{% for ip in firewall_whitelist_ips_input %}
+iptables -t filter -A INPUT -s {{ ip }} -j ACCEPT
+{% endfor %}
+
+## OUTPUT
+{% for ip in firewall_whitelist_ips_output %}
+iptables -t filter -A OUTPUT -d {{ ip }} -j ACCEPT
+{% endfor %}
+
+# ---------- Masquerade ----------
+{% if firewall_masquerade_enabled %}
+{% if firewall_masquerade_authorized_ips|length == 0 %}
+iptables -t nat -A POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE
+{% for port in firewall_allowed_output_tcp_ports %}
+iptables -t filter -A FORWARD -o {{ ansible_default_ipv4.interface }} -p tcp --dport {{ port }} -j ACCEPT
+iptables -t filter -A FORWARD -i {{ ansible_default_ipv4.interface }} -p tcp --sport {{ port }} -j ACCEPT
+{% endfor %}
+{% for port in firewall_allowed_output_udp_ports %}
+iptables -t filter -A FORWARD -o {{ ansible_default_ipv4.interface }} -p udp --dport {{ port }} -j ACCEPT
+iptables -t filter -A FORWARD -i {{ ansible_default_ipv4.interface }} -p udp --sport {{ port }} -j ACCEPT
+{% endfor %}
+iptables -t filter -A FORWARD -p icmp -j ACCEPT
+{% else %}
+{% for ip in firewall_masquerade_authorized_ips %}
+iptables -t nat -A POSTROUTING -o {{ ansible_default_ipv4.interface }} -s {{ ip }} -j MASQUERADE
+{% for port in firewall_allowed_output_tcp_ports %}
+iptables -t filter -A FORWARD -o {{ ansible_default_ipv4.interface }} -s {{ ip }} -p tcp --dport {{ port }} -j ACCEPT
+iptables -t filter -A FORWARD -i {{ ansible_default_ipv4.interface }} -d {{ ip }} -p tcp --sport {{ port }} -j ACCEPT
+{% endfor %}
+{% for port in firewall_allowed_output_udp_ports %}
+iptables -t filter -A FORWARD -o {{ ansible_default_ipv4.interface }} -s {{ ip }} -p udp --dport {{ port }} -j ACCEPT
+iptables -t filter -A FORWARD -i {{ ansible_default_ipv4.interface }} -d {{ ip }} -p udp --sport {{ port }} -j ACCEPT
+{% endfor %}
+iptables -t filter -A FORWARD -o {{ ansible_default_ipv4.interface }} -s {{ ip }} -p icmp -j ACCEPT
+iptables -t filter -A FORWARD -i {{ ansible_default_ipv4.interface }} -d {{ ip }} -p icmp -j ACCEPT
+{% endfor %}
+{% endif %}
+{% endif %}
+
+# ---------- Forward ----------
+{% if firewall_forwarded_tcp_ports|length or firewall_forwarded_udp_ports|length %}
+iptables -t nat -A POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE 
+{% endif %}
+{% for forwarded_port in firewall_forwarded_tcp_ports %}
+iptables -t nat -A PREROUTING -i {{ ansible_default_ipv4.interface }} -p tcp --dport {{ forwarded_port.src_port }} -j DNAT --to {{ forwarded_port.dest_ip }}:{{ forwarded_port.dest_port }}
+{% if forwarded_port.authorized_ips is not defined %}
+iptables -t filter -A FORWARD -i {{ ansible_default_ipv4.interface }} -p tcp --dport {{ forwarded_port.dest_port }} -d {{ forwarded_port.dest_ip }} -j ACCEPT
+iptables -t filter -A FORWARD -o {{ ansible_default_ipv4.interface }} -p tcp --sport {{ forwarded_port.dest_port }} -s {{ forwarded_port.dest_ip }} -j ACCEPT
+{% else %}
+{% for ip in forwarded_port.authorized_ips %}
+iptables -t filter -A FORWARD -i {{ ansible_default_ipv4.interface }} -p tcp --dport {{ forwarded_port.dest_port }} -s {{ ip }} -d {{ forwarded_port.dest_ip }} -j ACCEPT
+iptables -t filter -A FORWARD -o {{ ansible_default_ipv4.interface }} -p tcp --sport {{ forwarded_port.dest_port }} -s {{ forwarded_port.dest_ip }} -d {{ ip }} -j ACCEPT
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% for forwarded_port in firewall_forwarded_udp_ports %}
+iptables -t nat -A PREROUTING -i {{ ansible_default_ipv4.interface }} -p udp --dport {{ forwarded_port.src_port }} -j DNAT --to {{ forwarded_port.dest_ip }}:{{ forwarded_port.dest_port }}
+{% if forwarded_port.authorized_ips is not defined  %}
+iptables -t filter -A FORWARD -i {{ ansible_default_ipv4.interface }} -p udp --dport {{ forwarded_port.dest_port }} -d {{ forwarded_port.dest_ip }} -j ACCEPT
+iptables -t filter -A FORWARD -o {{ ansible_default_ipv4.interface }} -p udp --sport {{ forwarded_port.dest_port }} -s {{ forwarded_port.dest_ip }} -j ACCEPT
+{% else %}
+{% for ip in forwarded_port.authorized_ips %}
+iptables -t filter -A FORWARD -i {{ ansible_default_ipv4.interface }} -p udp --dport {{ forwarded_port.dest_port }} -s {{ ip }} -d {{ forwarded_port.dest_ip }} -j ACCEPT
+iptables -t filter -A FORWARD -o {{ ansible_default_ipv4.interface }} -p udp --sport {{ forwarded_port.dest_port }} -s {{ forwarded_port.dest_ip }} -d {{ ip }} -j ACCEPT
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+iptables -A FORWARD -o lo -j ACCEPT
+
+# ---------- Input ----------
+{% for port in firewall_allowed_input_tcp_ports %}
+iptables -t filter -A INPUT -p tcp --dport {{ port }} -j ACCEPT
+{% endfor %}
+{% for port in firewall_allowed_input_udp_ports %}
+iptables -t filter -A INPUT -p udp --dport {{ port }} -j ACCEPT
+{% endfor %}
+
+# ---------- Output ----------
+{% for port in firewall_allowed_output_tcp_ports %}
+iptables -t filter -A OUTPUT -p tcp --dport {{ port }} -j ACCEPT
+{% endfor %}
+{% for port in firewall_allowed_output_udp_ports %}
+iptables -t filter -A OUTPUT -p udp --dport {{ port }} -j ACCEPT
+{% endfor %}
+
+# ---------- Custom Rules ----------
+{% for rule in firewall_additional_rules %}
+{{ rule }}
+{% endfor %}

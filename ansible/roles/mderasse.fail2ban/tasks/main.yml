@@ -1,0 +1,88 @@
+---
+# tasks file for fail2ban
+- name: Fail2ban - Check required variables
+  fail: msg="Variable '{{ item }}' is not defined"
+  when: item not in vars
+  with_items: "{{required_vars}}"
+
+- name: Fail2ban - Install package
+  apt:
+    name: 
+      - python3-pyinotify
+      - fail2ban
+    update_cache: yes
+    autoremove: yes
+    cache_valid_time: 3600
+    install_recommends: no
+    state: latest
+
+- name: Fail2ban - Configure /etc/fail2ban/fail2ban.local
+  template:
+    src: "etc/fail2ban/fail2ban.local.j2"
+    dest: /etc/fail2ban/fail2ban.local
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart fail2ban
+
+- name: Fail2ban - Configure /etc/fail2ban/jail.local
+  template:
+    src: "etc/fail2ban/jail.local.j2"
+    dest: /etc/fail2ban/jail.local
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart fail2ban
+
+- name: Fail2ban - Retrieve default jails
+  find:
+    paths: /etc/fail2ban/jail.d/
+    patterns: defaults-*.conf
+  register: files_to_delete
+
+- name: Fail2ban - Delete default jails
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ files_to_delete.files }}"
+  notify: restart fail2ban
+
+- name: Fail2ban - Add extra Jails
+  set_fact:
+    fail2ban_jails: "{{ fail2ban_jails + fail2ban_extra_jails }}"
+
+- name: Fail2ban - Create Jails
+  template:
+    src: "etc/fail2ban/jail.d/jail.conf.j2"
+    dest: "/etc/fail2ban/jail.d/{{ item.name }}.conf"
+    owner: root
+    group: root
+    mode: 0644
+  with_items: "{{ fail2ban_jails }}"
+  notify: restart fail2ban
+
+- name: Fail2ban - Copy extra Fitlers
+  copy:
+    src: "{{ fail2ban_filterd_path }}"
+    dest: /etc/fail2ban/filter.d/
+    owner: root
+    group: root
+    mode: 0644
+  when: fail2ban_filterd_path is defined
+  notify: restart fail2ban
+
+- name: Fail2ban - Copy extra Actions
+  copy:
+    src: "{{ fail2ban_actiond_path }}"
+    dest: /etc/fail2ban/action.d/
+    owner: root
+    group: root
+    mode: 0644
+  when: fail2ban_actiond_path is defined
+  notify: restart fail2ban
+
+- name: Fail2ban - Enable service
+  service:
+    name: fail2ban
+    state: "{{ service_default_state | default('started') }}"
+    enabled: "{{ service_default_enabled | default(true) | bool }}"

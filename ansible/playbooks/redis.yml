@@ -1,0 +1,6 @@
+---
+- name: Install and Configure Redis
+  hosts: redis
+  become: yes
+  roles:
+    - geerlingguy.redis

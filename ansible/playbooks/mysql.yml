@@ -1,0 +1,6 @@
+---
+- name: Install and Configure Mysql
+  hosts: mysql
+  become: yes
+  roles:
+    - geerlingguy.mysql

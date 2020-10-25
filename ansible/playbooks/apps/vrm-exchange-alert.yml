@@ -1,0 +1,43 @@
+- name: VRM Exchange Alert - Install dependencies
+  apt:
+    name:
+      - libjson-perl
+      - libwww-perl
+
+- name: VRM Exchange Alert - Create directory
+  file:
+    path: "/home/exchange-alert/vrm"
+    state: directory
+    owner: "exchange-alert"
+    group: "exchange-alert"
+    mode: "0755"
+  become: true
+  become_user: exchange-alert
+
+- name: VRM Exchange Alert - Write Config File
+  template:
+    src: templates/bots/exchangeAlertConfig.json.j2
+    dest: /home/exchange-alert/vrm/config.json
+    owner: exchange-alert
+    group: exchange-alert
+    mode: '0600'
+  vars:
+    config: "{{ exchangeAlert.vrm }}"
+  become: true
+  become_user: exchange-alert
+
+- name: VRM Exchange Alert - Copy Script
+  copy:
+    src: files/apps/vrm-exchange-alert.pl
+    dest: /home/exchange-alert/vrm/exchangeAlert.pl
+    owner: exchange-alert
+    group: exchange-alert
+    mode: '0755'
+  become: true
+  become_user: exchange-alert
+
+- name: VRM Exchange Alert - Add exchange alerter to crontab
+  cron:
+    name: VRM Exchange Alert
+    job: "/home/exchange-alert/vrm && /home/exchange-alert/vrm/exchangeAlert.pl > /dev/null 2>&1"
+    user: "exchange-alert"

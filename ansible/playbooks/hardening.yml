@@ -1,0 +1,7 @@
+---
+- name: Hardening server
+  hosts: all
+  become: yes
+  roles:
+    - dev-sec.os-hardening
+    - dev-sec.ssh-hardening

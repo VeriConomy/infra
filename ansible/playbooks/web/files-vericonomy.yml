@@ -1,0 +1,57 @@
+- name: Virtual Host - Create files directory
+  file:
+    path: "/home/www/vericonomy/files"
+    state: directory
+    recurse: yes
+    owner: "www-data"
+    group: "www-data"
+    mode: u=rwX,g=rX,o=rX
+
+- name: Virtual Host - Create files directory bootstrap vrm
+  file:
+    path: "/home/www/vericonomy/files/vrm/bootstrap"
+    state: directory
+    recurse: yes
+    owner: "www-data"
+    group: "www-data"
+    mode: u=rwX,g=rX,o=rX
+
+- name: Virtual Host - Create files directory bootstrap vrc
+  file:
+    path: "/home/www/vericonomy/files/vrc/bootstrap"
+    state: directory
+    recurse: yes
+    owner: "www-data"
+    group: "www-data"
+    mode: u=rwX,g=rX,o=rX
+
+- name: Virtual Host - Change permission of files
+  file:
+    path: "/home/www/vericonomy/files"
+    state: directory
+    recurse: yes
+    owner: "www-data"
+    group: "www-data"
+    mode: u=rwX,g=rX,o=rX
+
+- name: Virtual Host - Create scripts directory
+  file:
+    path: "/opt/scripts"
+    state: directory
+  become: true
+
+- name: Virtual Host - Copy sync-bootstraps script
+  copy:
+    src: files/sync-bootstraps.sh
+    dest: /opt/scripts/sync-bootstraps.sh
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Webserver - Add rsync vrm bootstrap crontab
+  cron:
+    name: Sync Bootstraps
+    job: "/opt/scripts/sync-bootstraps.sh"
+    minute: "0"
+    hour: "7"
+    user: "root"

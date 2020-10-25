@@ -1,0 +1,9 @@
+mysql_packages:
+  - mariadb-client
+  - mariadb-server
+  - python3-mysqldb
+mysql_root_password_update: true
+mysql_slow_query_log_enabled: true
+mysql_innodb_io_capacity: 4000
+mysql_innodb_buffer_pool_instances: 3
+mysql_max_connections: "3000"

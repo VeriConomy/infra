@@ -1,0 +1,8 @@
+#### var for ssh hardening role
+ssh_kerberos_support: false
+sftp_enabled: true
+sshd_custom_options:
+- "AcceptEnv LANG"
+
+ssh_allow_users: ansible bastion
+

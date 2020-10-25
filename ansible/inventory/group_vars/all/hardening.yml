@@ -1,0 +1,12 @@
+os_hardening_enabled: true
+os_auditd_enabled: false
+os_security_packages_clean: true
+os_security_kernel_enable_core_dump: false
+os_auth_pw_max_age: 99999
+os_auth_pw_min_age: 0
+ufw_manage_defaults: false
+os_ignore_users:
+  - bastion
+  - ansible
+fs.file-max: 500000
+

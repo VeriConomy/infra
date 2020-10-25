@@ -1,0 +1,194 @@
+---
+- name: Install VRM Wallet and bootstrap
+  hosts: wallet_vrm
+  become: yes
+  tasks:
+    - name: Verium Wallet - Install dependencies
+      apt:
+        name:
+          - git
+          - build-essential
+          - libtool
+          - autotools-dev
+          - automake
+          - pkg-config
+          - libssl-dev
+          - libevent-dev
+          - bsdmainutils
+          - python3
+          - libcurl4-openssl-dev
+          - libboost-system-dev
+          - libboost-filesystem-dev
+          - libboost-chrono-dev
+          - libboost-program-options-dev
+          - libboost-test-dev
+          - libboost-thread-dev
+          - libminizip-dev
+          - zlib1g-dev
+          - libprotobuf-dev
+          - protobuf-compiler
+          - libqrencode-dev
+          - libdb-dev
+          - libdb++-dev
+          - unzip
+          - zip
+          - jq
+          - rsync
+        state: present
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Verium Wallet - Clone Verium Wallet
+      git:
+        repo: https://github.com/VeriumReserve/verium.git
+        dest: "/home/vrm/wallet"
+        update: no
+        version: "1.3.2"
+      become: true
+      become_user: vrm
+
+    - name: Verium Wallet - Stat verium binary
+      stat:
+        path: "/home/vrm/wallet/src/veriumd"
+      register: verium_build
+      become: true
+      become_user: vrm
+
+    - name: Verium Wallet - AutoGen
+      command: "./autogen.sh"
+      args:
+        chdir: /home/vrm/wallet
+      when: verium_build.stat.exists == false
+      become: true
+      become_user: vrm
+
+    - name: Verium Wallet - Configure
+      command: "./configure"
+      args:
+        chdir: /home/vrm/wallet
+      when: verium_build.stat.exists == false
+      become: true
+      become_user: vrm
+
+    - name: Verium Wallet - Build
+      make:
+        chdir: /home/vrm/wallet
+      when: verium_build.stat.exists == false
+      become: true
+      become_user: vrm
+
+    - name: Verium Wallet - Create wallet directory
+      file:
+        path: "/home/vrm/.verium"
+        state: directory
+        owner: "vrm"
+        group: "vrm"
+        mode: "0775"
+      become: true
+      become_user: vrm
+
+    - name: Verium Wallet - Stat verium bootstrap
+      stat:
+        path: "/home/vrm/.verium/blocks"
+      register: verium_bootstrap
+      become: true
+      become_user: vrm
+
+    - name: Verium Wallet - Create bootstrap directory
+      file:
+        path: "/home/vrm/bootstrap"
+        state: directory
+        owner: "vrm"
+        group: "vrm"
+        mode: "0775"
+      when: verium_bootstrap.stat.exists == false
+      become: true
+      become_user: vrm
+
+    - name: Verium Wallet - Download bootstrap
+      unarchive:
+        src: https://files.vericonomy.com/vrm/bootstrap/bootstrap.zip
+        dest: /home/vrm/bootstrap
+        remote_src: yes
+        creates: /home/vrm/bootstrap/bootstrap/blk0001.dat
+      when: verium_bootstrap.stat.exists == false
+      become: true
+      become_user: vrm
+
+    - name: Verium Wallet - Copy bootstrap to good directory
+      copy:
+        src: /home/vrm/bootstrap/bootstrap/
+        dest: /home/vrm/.verium/
+        remote_src: yes
+        force: yes
+      when: verium_bootstrap.stat.exists == false
+      become: true
+      become_user: vrm
+
+    - name: Verium Wallet - Clean bootstrap
+      file:
+        state: absent
+        path: /home/vrm/bootstrap/bootstrap
+
+    - name: Verium Wallet - Retrieve node list
+      uri:
+        url: "https://chainz.cryptoid.info/explorer/peers.nodes.dws?coin=vrm&subver=%2FVerium%3A1.3.2%2F"
+        method: GET
+        return_content: yes
+      register: node_list_result
+
+    - name: Verium Wallet - Write Config File
+      template:
+        src: templates/wallet/verium.conf.j2
+        dest: /home/vrm/.verium/verium.conf
+        owner: vrm
+        group: vrm
+        mode: '0600'
+      vars:
+        node_list: "{{ node_list_result.json }}"
+      become: true
+      become_user: vrm
+
+    # Set verium service
+    - name: Verium Wallet - Create Service
+      template:
+        src: templates/wallet/veriumd.service.j2
+        dest: /etc/systemd/system/veriumd.service
+        mode: '0644'
+
+    # Start wallet
+    - name: Verium Wallet - Enable and start service
+      service:
+        name: veriumd
+        enabled: yes
+        state: started
+
+    # Add boostrap generator if needed
+    - name: Verium Wallet - Boostrap Generator
+      block:
+        - name: Verium Boostraper - Create scripts directory
+          file:
+            path: "/home/vrm/scripts"
+            state: directory
+            owner: "vrm"
+            group: "vrm"
+            mode: "0775"
+          become: true
+          become_user: vrm
+  
+        - name: Verium Boostraper - Copy bootstrap script
+          copy:
+            src: files/vrm-bootstrap.sh
+            dest: /home/vrm/scripts/bootstrap.sh
+            owner: vrm
+            group: vrm
+            mode: '0775'
+  
+        - name: Verium Boostraper - Add bootstrap generator crontab
+          cron:
+            name: Verium Bootstraper
+            job: "/home/vrm/scripts/bootstrap.sh >/dev/null 2>&1"
+            minute: "0"
+            hour: "1"
+            user: "vrm"
+      when: bootstrap_generator is defined and bootstrap_generator

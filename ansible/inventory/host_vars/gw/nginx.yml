@@ -1,0 +1,299 @@
+# Configure Nginx
+nginx_stream_template: {}
+nginx_http_template:
+#################################################################
+#                    VERICONOMY DOMAIN                          #
+#                                                               #
+#################################################################
+  default:
+    template_file: http/custom.conf.j2
+    conf_file_name: "vericonomy.conf"
+    conf_file_location: /etc/nginx/conf.d/
+    servers:
+      # vericonomy.com - SSL Redirection
+      main-ssl-redirect:
+        listen:
+          listen_http:
+            port: 80
+            ssl: false
+            opts:
+              - default_server
+        server_name: "vericonomy.com"
+        error_page: /usr/share/nginx/html/error/_site
+        web_server:
+          http_demo_conf: false
+          locations:
+            - location: "^~ /.well-known/acme-challenge/"
+              custom_options:
+                - "allow all"
+                - "default_type \"text/plain\""
+                - "root /home/www/letsencrypt"
+                - "break"
+            - location: "/"
+              custom_options:
+                - "return 301 https://$server_name$request_uri"
+      # vericonomy.com - Redirection to Vericoin.info
+      main-ssl:
+        listen:
+          listen_https:
+            port: 443
+            ssl: true
+            opts:
+              - default_server
+        server_name: "vericonomy.com"
+        error_page: /usr/share/nginx/html/error/_site
+        autoindex: false
+        web_server:
+          http_demo_conf: false
+          locations:
+            - location: "^~ /.well-known/acme-challenge/"
+              custom_options:
+                - "allow all"
+                - "default_type \"text/plain\""
+                - "root /home/www/letsencrypt"
+                - "break"
+            - location: "/"
+              custom_options:
+                - "return 301 https://vericoin.info/$request_uri"
+        ssl:
+          cert: "/etc/letsencrypt/live/vericonomy.com/fullchain.pem"
+          key: "/etc/letsencrypt/live/vericonomy.com/privkey.pem"
+          dhparam: /etc/ssl/dhparam4.pem
+          protocols: TLSv1 TLSv1.1 TLSv1.2
+          ciphers: HIGH:!aNULL:!MD5
+          prefer_server_ciphers: true
+          session_cache: shared:SSL:10m
+          session_timeout: 10m
+          disable_session_tickets: true
+          stapling: false
+          stapling_verify: false
+      # www.vericonomy.com - SSL Redirection
+      www-ssl-redirect:
+        listen:
+          listen_http:
+            port: 80
+            ssl: false
+        server_name: "www.vericonomy.com"
+        error_page: /usr/share/nginx/html/error/_site
+        web_server:
+          http_demo_conf: false
+          locations:
+            - location: "^~ /.well-known/acme-challenge/"
+              custom_options:
+                - "allow all"
+                - "default_type \"text/plain\""
+                - "root /home/www/letsencrypt"
+                - "break"
+            - location: "/"
+              custom_options:
+                - "return 301 https://$server_name$request_uri"
+      # www.vericonomy.com - Redirection to www.vericoin.info
+      www-ssl:
+        listen:
+          listen_https:
+            port: 443
+            ssl: true
+        server_name: "www.vericonomy.com"
+        error_page: /usr/share/nginx/html/error/_site
+        autoindex: false
+        web_server:
+          http_demo_conf: false
+          locations:
+            - location: "^~ /.well-known/acme-challenge/"
+              custom_options:
+                - "allow all"
+                - "default_type \"text/plain\""
+                - "root /home/www/letsencrypt"
+                - "break"
+            - location: "/"
+              custom_options:
+                - "return 301 https://vericoin.info/$request_uri"
+        ssl:
+          cert: "/etc/letsencrypt/live/vericonomy.com/fullchain.pem"
+          key: "/etc/letsencrypt/live/vericonomy.com/privkey.pem"
+          dhparam: /etc/ssl/dhparam4.pem
+          protocols: TLSv1 TLSv1.1 TLSv1.2
+          ciphers: HIGH:!aNULL:!MD5
+          prefer_server_ciphers: true
+          session_cache: shared:SSL:10m
+          session_timeout: 10m
+          disable_session_tickets: true
+          stapling: false
+          stapling_verify: false
+      # files.vericonomy.com - SSL Redirection
+      files-ssl-redirect:
+        listen:
+          listen_http:
+            port: 80
+            ssl: false
+        server_name: "files.vericonomy.com"
+        error_page: /usr/share/nginx/html/error/_site
+        web_server:
+          http_demo_conf: false
+          locations:
+            - location: "^~ /.well-known/acme-challenge/"
+              custom_options:
+                - "allow all"
+                - "default_type \"text/plain\""
+                - "root /home/www/letsencrypt"
+                - "break"
+            - location: "/"
+              custom_options:
+                - "return 301 https://$server_name$request_uri"
+      # files.vericonomy.com - use web backend
+      files-ssl:
+        listen:
+          listen_https:
+            port: 443
+            ssl: true
+        server_name: "files.vericonomy.com"
+        error_page: /usr/share/nginx/html/error/_site
+        autoindex: false
+        web_server:
+          http_demo_conf: false
+          locations:
+            - location: "^~ /.well-known/acme-challenge/"
+              custom_options:
+                - "allow all"
+                - "default_type \"text/plain\""
+                - "root /home/www/letsencrypt"
+                - "break"
+        reverse_proxy:
+          locations:
+            - location: /
+              add_headers:
+                - name: Strict-Transport-Security
+                  value: max-age=15768000; includeSubDomains
+                  always: true
+                - name: X-Frame-Options
+                  value: SAMEORIGIN
+                  always: true
+              proxy_set_header:
+                - name: X-Real-IP
+                  value: $remote_addr
+                - name: X-Forwarded-For
+                  value: $proxy_add_x_forwarded_for
+                - name: X-Forwarded-Proto
+                  value: $scheme
+              proxy_ssl:
+                verify: off
+              proxy_pass: http://www
+              websocket: true
+        ssl:
+          cert: "/etc/letsencrypt/live/vericonomy.com/fullchain.pem"
+          key: "/etc/letsencrypt/live/vericonomy.com/privkey.pem"
+          dhparam: /etc/ssl/dhparam4.pem
+          protocols: TLSv1 TLSv1.1 TLSv1.2
+          ciphers: HIGH:!aNULL:!MD5
+          prefer_server_ciphers: true
+          session_cache: shared:SSL:10m
+          session_timeout: 10m
+          disable_session_tickets: true
+          stapling: false
+          stapling_verify: false
+    upstreams:
+      www:
+        name: www
+        lb_method: least_conn
+        zone_name: frontend
+        zone_size: 64k
+        sticky_cookie: false
+        servers:
+          www1:
+            address: "10.0.0.40"
+            port: 80
+            weight: 1
+            health_check: max_fails=3 fail_timeout=20s
+#################################################################
+#                  ADMINISTRATION DOMAIN                        #
+#                                                               #
+#################################################################
+  administration:
+    template_file: http/custom.conf.j2
+    conf_file_name: "administration.conf"
+    conf_file_location: /etc/nginx/conf.d/
+    servers:
+      # srv01.vericonomy.com - SSL Redirection
+      srv01-ssl-redirect:
+        listen:
+          listen_http:
+            port: 80
+            ssl: false
+        server_name: "srv01.vericonomy.com"
+        error_page: /usr/share/nginx/html/error/_site
+        web_server:
+          http_demo_conf: false
+          locations:
+            - location: "^~ /.well-known/acme-challenge/"
+              custom_options:
+                - "allow all"
+                - "default_type \"text/plain\""
+                - "root /home/www/letsencrypt"
+                - "break"
+            - location: "/"
+              custom_options:
+                - "return 301 https://$server_name$request_uri"
+      # srv01.vericonomy.com - Proxmox UI
+      main-ssl:
+        listen:
+          listen_https:
+            port: 443
+            ssl: true
+        server_name: "srv01.vericonomy.com"
+        error_page: /usr/share/nginx/html/error/_site
+        autoindex: false
+        web_server:
+          http_demo_conf: false
+          locations:
+            - location: "^~ /.well-known/acme-challenge/"
+              custom_options:
+                - "allow all"
+                - "default_type \"text/plain\""
+                - "root /home/www/letsencrypt"
+                - "break"
+        reverse_proxy:
+          locations:
+            - location: /
+              add_headers:
+                - name: Strict-Transport-Security
+                  value: max-age=15768000; includeSubDomains
+                  always: true
+                - name: X-Frame-Options
+                  value: SAMEORIGIN
+                  always: true
+              proxy_set_header:
+                - name: X-Real-IP
+                  value: $remote_addr
+                - name: X-Forwarded-For
+                  value: $proxy_add_x_forwarded_for
+                - name: X-Forwarded-Proto
+                  value: $scheme
+              proxy_ssl:
+                verify: off
+              proxy_pass: https://srv01
+              websocket: true
+        ssl:
+          cert: "/etc/letsencrypt/live/srv01.vericonomy.com/fullchain.pem"
+          key: "/etc/letsencrypt/live/srv01.vericonomy.com/privkey.pem"
+          dhparam: /etc/ssl/dhparam4.pem
+          protocols: TLSv1 TLSv1.1 TLSv1.2
+          ciphers: HIGH:!aNULL:!MD5
+          prefer_server_ciphers: true
+          session_cache: shared:SSL:10m
+          session_timeout: 10m
+          disable_session_tickets: true
+          stapling: false
+          stapling_verify: false
+    upstreams:
+      srv01:
+        name: srv01
+        lb_method: least_conn
+        zone_name: frontend
+        zone_size: 64k
+        sticky_cookie: false
+        servers:
+          srv01:
+            address: "10.0.0.1"
+            port: 8006
+            weight: 1
+            health_check: max_fails=3 fail_timeout=20s

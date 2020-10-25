@@ -1,0 +1,10 @@
+- name: Rkhunter - Install rkhunter package
+  apt:
+    name: "rkhunter"
+    update_cache: yes
+    autoremove: yes
+    cache_valid_time: 3600
+    install_recommends: no
+    state: latest
+  notify:
+    - launch propupd

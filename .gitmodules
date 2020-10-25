@@ -1,0 +1,9 @@
+[submodule "ansible/roles/dev-sec.os-hardening"]
+	path = ansible/roles/dev-sec.os-hardening
+	url = https://github.com/dev-sec/ansible-os-hardening
+[submodule "ansible/roles/dev-sec.ssh-hardening"]
+	path = ansible/roles/dev-sec.ssh-hardening
+	url = https://github.com/dev-sec/ansible-ssh-hardening.git
+[submodule "ansible/roles/geerlingguy.ntp"]
+	path = ansible/roles/geerlingguy.ntp
+	url = https://github.com/geerlingguy/ansible-role-ntp.git

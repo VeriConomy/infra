@@ -1,0 +1,7 @@
+[{{ item.name }}]
+enabled = {{ item.enabled | default(true) | bool | to_json }}
+{% for option, value in item.items() | sort %}
+{% if option not in ['name', 'enabled'] %}
+{{ option }} = {{ value }}
+{% endif %}
+{% endfor %}

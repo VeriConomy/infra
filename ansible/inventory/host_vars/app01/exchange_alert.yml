@@ -1,0 +1,17 @@
+exchangeAlert:
+  vrm:
+    slackHook: "{{ exchange_alert_vrm_hook }}"
+    coin: "VRM"
+    to: "BTC"
+    fiat: "USDT"
+    tickerAlertPercentage: 10
+    tradeMinAmount: 2000
+    tradeMinPercentage: 10
+  vrc:
+    slackHook: "{{ exchange_alert_vrc_hook }}"
+    coin: "VRC"
+    to: "BTC"
+    fiat: "USDT"
+    tickerAlertPercentage: 10
+    tradeMinAmount: 10000
+    tradeMinPercentage: 10

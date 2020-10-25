@@ -1,0 +1,26 @@
+# Firewall Setup
+firewall_default_input: DROP
+firewall_default_output: DROP
+firewall_default_forward: DROP
+firewall_allowed_input_tcp_ports:
+  - 36990
+firewall_allowed_input_udp_ports:
+  - 36990
+firewall_allowed_output_tcp_ports:
+  - 21
+  - 22
+  - 53
+  - 80
+  - 443
+  - 9418
+  - 11371
+  - 36988
+firewall_allowed_output_udp_ports:
+  - 53
+  - 123
+  - 36988
+firewall_additional_rules:
+  - "iptables -t filter -A INPUT -p tcp -s 10.0.0.40 --dport 22 -j ACCEPT"
+  - "iptables -t filter -A INPUT -p tcp -s 10.0.0.3 --dport 22 -j ACCEPT"
+  - "iptables -t filter -A INPUT -p tcp -s 10.0.0.4 --dport 22 -j ACCEPT"
+

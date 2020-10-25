@@ -1,0 +1,12 @@
+---
+- name: Install Apps on app01
+  hosts: app01
+  become: yes
+  tasks:
+
+    - name: "App01 - Execute each app install"
+      include_tasks:
+        file: "apps/{{ item }}.yml"
+      with_items:
+        - vrc-exchange-alert
+        - vrm-exchange-alert

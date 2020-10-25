@@ -1,0 +1,6 @@
+#### var for ntp
+ntp_enabled: true
+ntp_timezone: Etc/UTC
+ntp_area: 'fr'
+ntp_manage_config: true
+

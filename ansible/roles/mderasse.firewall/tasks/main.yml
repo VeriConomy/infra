@@ -1,0 +1,68 @@
+---
+- name: Firewall - Check required variables
+  fail: msg="Variable '{{ item }}' is not defined"
+  when: item not in vars
+  with_items: "{{required_vars}}"
+
+- name: Firewall - Ensure iptables is present.
+  package:
+    name: iptables
+    state: present
+
+- name: Firewall - Load Docker Service Fact
+  service_facts:
+
+- name: Firewall - Creates directory
+  file:
+    path: /etc/firewall
+    state: directory
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Firewall - Add Iptables rules file
+  template:
+    src: firewall.sh.j2
+    dest: /etc/firewall/firewall.sh
+    owner: root
+    group: root
+    mode: 0744
+
+- name: Firewall - Add init.d startup script
+  template:
+    src: firewall.init.j2
+    dest: /etc/init.d/firewall
+    owner: root
+    group: root
+    mode: 0744
+  when: "ansible_service_mgr != 'systemd'"
+
+- name: Firewall - Add systemd startup script
+  template:
+    src: firewall.unit.j2
+    dest: /etc/systemd/system/firewall.service
+    owner: root
+    group: root
+    mode: 0644
+  when: "ansible_service_mgr == 'systemd'"
+
+- name: Firewall - Launch iptables manually first
+  shell: /etc/firewall/firewall.sh
+  async: 10
+  poll: 0
+
+- name: Firewall - Waiting 3 seconds for first Init to prevent Hang
+  pause:
+    seconds: 3
+
+- name: Firewall - Manage firewall service
+  service:
+    name: firewall
+    enabled: "{{ firewall_enabled_at_boot }}"
+    state: "restarted"
+  async: 10
+  poll: 0
+
+- name: Firewall - Disable other firewalls system
+  import_tasks: disable-other-firewalls.yml
+  when: firewall_disable_firewalld or firewall_disable_ufw

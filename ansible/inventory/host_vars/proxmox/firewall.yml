@@ -1,0 +1,30 @@
+# Firewall Setup
+firewall_default_input: DROP
+firewall_default_output: DROP
+firewall_default_forward: ACCEPT
+firewall_masquerade_enabled: true
+firewall_allowed_input_tcp_ports:
+  - 80
+  - 443
+firewall_forwarded_tcp_ports:
+  - src_port: 222
+    dest_ip: "10.0.0.3"
+    dest_port: 22
+  - src_port: 80
+    dest_ip: "10.0.0.2"
+    dest_port: 80
+  - src_port: 443
+    dest_ip: "10.0.0.2"
+    dest_port: 443
+    # Wallet
+  - src_port: 36988
+    dest_ip: "10.0.0.16"
+    dest_port: 36988
+  - src_port: 36990
+    dest_ip: "10.0.0.15"
+    dest_port: 36990
+firewall_additional_rules:
+  - "iptables -t filter -A INPUT -p tcp -s 10.0.0.2 --dport 8006 -j ACCEPT"
+  - "iptables -t filter -A INPUT -p tcp -s 10.0.0.3 --dport 22 -j ACCEPT"
+  - "iptables -t filter -A INPUT -p tcp -s 10.0.0.4 --dport 22 -j ACCEPT"
+

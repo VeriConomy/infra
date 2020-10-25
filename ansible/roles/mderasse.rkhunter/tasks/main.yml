@@ -1,0 +1,34 @@
+---
+- name: Rkhunter - Check required variables
+  fail: msg="Variable '{{ item }}' is not defined"
+  when: item not in vars
+  with_items: "{{required_vars}}"
+
+- name: Rkhunter - Install Rkhunter on RedHat
+  include_tasks: redhat.yml
+  when: ansible_os_family == "RedHat"
+
+- name: Rkhunter - Install Rkhunter on Debian
+  include_tasks: debian.yml
+  when: ansible_os_family == "Debian"
+
+- name: Rkhunter - Configure /etc/default/rkhunter
+  template:
+    src: etc/default/rkhunter.conf.j2
+    dest: /etc/default/rkhunter
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Rkhunter - Configure /etc/rkhunter.conf
+  template:
+    src: "etc/rkhunter.conf.j2"
+    dest: /etc/rkhunter.conf
+    owner: root
+    group: root
+    mode: 0644
+    
+- name: Rkhunter - Update Rkhunter database
+  command: rkhunter --update
+  register: rkhunter_update
+  failed_when: rkhunter_update.rc != 2 and rkhunter_update.rc != 0

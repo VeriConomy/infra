@@ -1,0 +1,31 @@
+# {{ ansible_managed }}
+#
+# Fail2Ban Jail configuiration
+# Override the default configuration in jail.conf
+# Additionnal configuration can be found in jail.d
+#
+# For more information about each params, please check jail.conf
+
+[INCLUDES]
+before = paths-debian.conf
+
+[DEFAULT]
+
+ignoreip = {{ fail2ban_ignoreips | join(' ') }}
+
+bantime  = {{ fail2ban_bantime }}
+maxretry = {{ fail2ban_maxretry }}
+findtime = {{ fail2ban_findtime }}
+
+backend = {{ fail2ban_backend }}
+
+usedns =  {{ fail2ban_usedns }}
+
+destemail = {{ fail2ban_destmail }}
+{% if fail2ban_sender is defined %}
+sender = {{ fail2ban_sender }}
+{% endif %}
+
+banaction = {{ fail2ban_banaction }}
+banaction_allports = {{ fail2ban_banaction_allports }}
+action = {{ fail2ban_action }}

@@ -1,0 +1,8 @@
+mysql_databases:
+  - name: webdev
+
+mysql_users:
+  - name: webdev
+    host: "%"
+    password: "{{ mysql_webdev_password }}"
+    priv: "webdev.*:ALL"

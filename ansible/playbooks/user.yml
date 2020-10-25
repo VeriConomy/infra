@@ -1,0 +1,55 @@
+---
+- name: Add and remove users infra
+  hosts: all
+  become: yes
+  tasks:
+  
+  - name: User - Merge users
+    set_fact:
+      usersdict: "{{ users | combine(extra_users | default({})) }}"
+
+  - name: "Add user {{ item.key }}"
+    user:
+      name: "{{ item.key }}"
+      comment: "{{ item.key }} User"
+      create_home: yes
+      groups: "{{ item.value.groups | default('') }}"
+      shell: "{{ item.value.shell | default('/bin/false') }}"
+      password: "{{ item.value.password | default('*') }}"
+      state: "{{ item.value.state }}"
+    with_items: "{{ usersdict | dict2items }}"  
+
+  - name: Ansible User - Sudo without password
+    copy:
+      content: 'ansible ALL=(ALL:ALL) NOPASSWD:ALL'
+      dest: /etc/sudoers.d/ansible
+      mode: 0440
+    when: users.ansible.state == "present"
+
+  - name: Bastion User - Sudo without password
+    copy:
+      content: 'bastion ALL=(ALL:ALL) NOPASSWD:ALL'
+      dest: /etc/sudoers.d/bastion
+      mode: 0440
+    when: users.bastion.state == "present"
+
+  - name: User - Manage SSH Keys
+    ansible.posix.authorized_key:
+      user: "{{ item.key }}"
+      key: "{{ (item.value.pubkeys | default(())) | join('\n') }}"
+      state: present
+      exclusive: True  
+    with_items: "{{ usersdict | dict2items }}"  
+    when: "item.value.pubkeys is defined"
+
+  - name: Cleanup bastion authorized keys
+    file:
+      path: /home/bastion/.ssh/authorized_keys
+      state: absent
+
+  - name: "Add Bastion user access"
+    ansible.posix.authorized_key:
+      user: "bastion"
+      key: "{{ users[item]['bastionpubkeys'] | join('\n') }}"
+      state: present
+    with_items: "{{ allow_users }}"  

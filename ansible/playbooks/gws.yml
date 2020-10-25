@@ -1,0 +1,107 @@
+---
+- name: Install Gateway
+  hosts: gws
+  become: yes
+  pre_tasks:
+    - name: WebServer - Populate service facts
+      service_facts:
+
+    - name: WebServer - Install Apache2 utils
+      apt:
+        name:
+          - apache2-utils
+          - python-passlib
+        state: present
+        update_cache: yes
+        autoremove: yes
+        cache_valid_time: 3600
+        install_recommends: no
+
+    - name: WebServer - Create letsencrypt token directory
+      file:
+        path: /home/www/letsencrypt
+        state: directory
+        owner: www-data
+        group: www-data
+        recurse: yes
+        mode: u=rwX,g=rX,o=rX
+
+    - name: WebServer - Disable Nginx template 
+      set_fact:
+        nginx_http_template_enable: false
+        nginx_stream_template_enable: false
+
+    - name: WebServer - Install Nginx
+      include_role:
+        name: nginxinc.nginx
+      when: "'nginx.service' not in ansible_facts.services"
+
+    - name: Starting Nginx service
+      service:
+        name: nginx
+        state: started
+
+    - name: WebServer - Creates SSL directory
+      file:
+        path: /etc/ssl
+        state: directory
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: WebServer - Generate Diffie-Hellman for nginx
+      openssl_dhparam:
+        path: /etc/ssl/dhparam4.pem
+        owner: root
+        group: root
+        mode: 0644
+        size: 2048
+
+    - name: WebServer - Creates Auth directory
+      file:
+        path: /etc/nginx/auth
+        state: directory
+        owner: root
+        group: www-data
+        mode: 0750
+
+    - name: WebServer - Retrieve custom error page
+      git:
+        repo: https://github.com/alexphelps/server-error-pages.git
+        dest: /usr/share/nginx/html/error
+        force: yes
+
+    - name: WebServer - Change error page owner
+      file:
+        path: /usr/share/nginx/html/error
+        owner: "www-data"
+        group: "www-data"
+        recurse: yes
+
+    - name: WebServer - Change ngnix owner
+      file:
+        path: /etc/nginx
+        owner: "root"
+        group: "www-data"
+
+    - name: WebServer - Delete default vhost
+      file:
+        path: /etc/nginx/conf.d/default.conf
+        state: absent
+
+    - name: WebServer - Enable Nginx template 
+      set_fact:
+        nginx_http_template_enable: true
+        nginx_stream_template_enable: true
+
+
+  roles:
+    - nginxinc.nginx
+    - geerlingguy.certbot
+
+  post_tasks:
+  # Sometime there is a weird issue where nginx doesn't start the first time ...
+  - name: Starting Nginx service
+    service:
+      name: nginx
+      state: started

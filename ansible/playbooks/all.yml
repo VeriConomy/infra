@@ -1,8 +1,53 @@
 ---
 - name: Deploy vPloy
-  connection: local
+  hosts: all
   gather_facts: no
 
 - import_playbook: base.yml
   tags:
   - base
+
+- import_playbook: user.yml
+  tags:
+  - user
+
+- import_playbook: hardening.yml
+  tags:
+  - hardening
+
+- import_playbook: firewall.yml
+  tags:
+  - firewall
+
+# Specific playbooks for systems
+- import_playbook: bastion.yml
+  tags:
+  - bastion
+
+- import_playbook: mysql.yml
+  tags:
+  - mysql
+
+- import_playbook: postgresql.yml
+  tags:
+  - postgresql
+
+- import_playbook: redis.yml
+  tags:
+  - redis
+
+- import_playbook: wallet-vrc.yml
+  tags:
+  - wallet-vrc
+
+- import_playbook: wallet-vrm.yml
+  tags:
+  - wallet-vrm
+
+- import_playbook: web.yml
+  tags:
+  - web
+
+- import_playbook: gws.yml
+  tags:
+  - gws

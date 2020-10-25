@@ -1,0 +1,43 @@
+- name: VRC Exchange Alert - Install dependencies
+  apt:
+    name:
+      - libjson-perl
+      - libwww-perl
+
+- name: VRC Exchange Alert - Create directory
+  file:
+    path: "/home/exchange-alert/vrc"
+    state: directory
+    owner: "exchange-alert"
+    group: "exchange-alert"
+    mode: "0755"
+  become: true
+  become_user: exchange-alert
+
+- name: VRC Exchange Alert - Write Config File
+  template:
+    src: templates/bots/exchangeAlertConfig.json.j2
+    dest: /home/exchange-alert/vrc/config.json
+    owner: exchange-alert
+    group: exchange-alert
+    mode: '0600'
+  vars:
+    config: "{{ exchangeAlert.vrc }}"
+  become: true
+  become_user: exchange-alert
+
+- name: VRC Exchange Alert - Copy Script
+  copy:
+    src: files/apps/vrc-exchange-alert.pl
+    dest: /home/exchange-alert/vrc/exchangeAlert.pl
+    owner: exchange-alert
+    group: exchange-alert
+    mode: '0755'
+  become: true
+  become_user: exchange-alert
+
+- name: VRC Exchange Alert - Add exchange alerter to crontab
+  cron:
+    name: VRC Exchange Alert
+    job: "cd /home/exchange-alert/vrc && /home/exchange-alert/vrc/exchangeAlert.pl > /dev/null 2>&1"
+    user: "exchange-alert"

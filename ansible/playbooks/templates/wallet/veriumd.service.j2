@@ -1,0 +1,25 @@
+[Unit]
+Description=Veriumd Wallet
+Requires=network.target
+After=syslog.target network.target
+
+[Service]
+ExecStart=/home/vrm/wallet/src/veriumd -pid=/var/run/veriumd/veriumd.pid \
+                                        -conf=/home/vrm/.verium/verium.conf \
+                                        -daemon
+
+ExecStop=/home/vrm/wallet/src/verium-cli stop
+Type=forking
+PIDFile=/var/run/veriumd/veriumd.pid
+{% if bootstrap_generator is defined and bootstrap_generator %}
+Restart=no
+{% else %}
+Restart=on-failure
+{% endif %}
+TimeoutStopSec=600
+User=vrm
+Group=vrm
+RuntimeDirectory=veriumd
+
+[Install]
+WantedBy=multi-user.target

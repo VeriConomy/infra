@@ -1,0 +1,6 @@
+---
+- name: Install and Configure Postgresql
+  hosts: psql
+  become: yes
+  roles:
+    - geerlingguy.postgresql

@@ -1,0 +1,4 @@
+os_auditd_enabled: true
+sysctl_overwrite:
+  net.ipv4.ip_forward: 1
+

@@ -1,0 +1,15 @@
+postgresql_databases:
+  - name: explorer_vrm
+    owner: explorer_vrm
+    state: present
+  - name: explorer_vrc
+    owner: explorer_vrc
+    state: present
+
+postgresql_users:
+  - name: explorer_vrm
+    password: "{{ user_explorer_vrm_password }}"
+    state: present
+  - name: explorer_vrc
+    password: "{{ user_explorer_vrc_password }}"
+    state: present

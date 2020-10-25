@@ -1,7 +1,7 @@
 ---
-- name: Do all configuration tasks
+- name: Basic system configuration
   hosts: all
-  gather_facts: no
+  become: yes
   tasks:
   - name: Linux - Install Default Packages
     apt:
@@ -15,6 +15,7 @@
         - libwww-perl
         - openssh-server
         - openssl
+        - python3-netaddr
         - screen
         - unzip
         - vim
@@ -25,11 +26,10 @@
       autoremove: yes
       cache_valid_time: 3600
       install_recommends: no
-    become: yes
 
   - name: Copy systemd DNS config
     template:
-      src: "../templates/resolved.conf.j2"
+      src: "templates/resolved.conf.j2"
       dest: "/etc/systemd/resolved.conf"
       owner: root
       group: root
@@ -41,3 +41,9 @@
       state: restarted
       name: systemd-sysctl
     when: resolved_tmpl.changed
+
+
+  roles:
+    - geerlingguy.ntp
+    - mderasse.fail2ban
+    - mderasse.rkhunter

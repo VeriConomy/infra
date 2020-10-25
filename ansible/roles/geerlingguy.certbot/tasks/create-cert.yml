@@ -1,0 +1,38 @@
+---
+- name: Check if certificate already exists.
+  stat:
+    path: /etc/letsencrypt/live/{{ cert_item.domains | first | replace('*.', '') }}/cert.pem
+  register: letsencrypt_cert
+
+- name: collect facts about system services
+  service_facts:
+
+- name: Create a standalone cert if nginx is stop or cert doesn't exist
+  block:
+    - name: Stop services to allow certbot to generate a cert.
+      service:
+        name: "{{ item }}"
+        state: stopped
+      with_items: "{{ certbot_create_standalone_stop_services }}"
+
+    - name: Generate new certificate if one doesn't exist.
+      command: "{{ certbot_standalone_create_command }}"
+
+    - name: Start services after cert has been generated.
+      service:
+        name: "{{ item }}"
+        state: started
+      with_items: "{{ certbot_create_standalone_stop_services }}"
+  when: (not letsencrypt_cert.stat.exists or 'nginx.service' not in ansible_facts.services or ansible_facts['services']['nginx.service']['state'] != 'running')
+
+- name: Create cert using nginx server if nginx is ok
+  block:
+    - name: Generate certificate using webroot
+      command: "{{ certbot_webroot_create_command }}"
+
+    - name: Reload services after cert has been generated.
+      service:
+        name: "{{ item }}"
+        state: reloaded
+      with_items: "{{ certbot_create_standalone_stop_services }}"
+  when: ('nginx.service' in ansible_facts.services and ansible_facts['services']['nginx.service']['state'] == 'running')

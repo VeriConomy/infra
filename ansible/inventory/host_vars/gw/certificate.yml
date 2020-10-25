@@ -1,0 +1,18 @@
+# Configure CertBot (Lets Encrypt)
+certbot_certs:
+  # administration domains
+  - domains:
+    - "srv01.vericonomy.com"
+  # vericonomy domains
+  - domains:
+    - "vericonomy.com"
+    - "www.vericonomy.com"
+  # vrm vericonomy domain
+#  - domains:
+#    - "vrm.vericonomy.com"
+#    - "explorer.vrm.vericonomy.com"
+  # vrc vericonomy domain
+#  - domains:
+#    - "vrc.vericonomy.com"
+#    - "explorer.vrc.vericonomy.com"
+

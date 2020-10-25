@@ -1,0 +1,171 @@
+---
+- name: Install VRC Wallet and bootstrap
+  hosts: wallet_vrc
+  become: yes
+  tasks:
+    - name: Vericoin Wallet - Install dependencies
+      apt:
+        name:
+          - build-essential
+          - libboost-dev
+          - libboost-system-dev
+          - libboost-filesystem-dev
+          - libboost-thread-dev
+          - libdb++-dev
+          - libboost-program-options-dev
+          - libminiupnpc-dev
+          - libboost-all-dev
+          - libqrencode-dev
+          - freeglut3-dev
+          - libminizip-dev
+          - libssl1.0-dev
+          - libcurl3
+          - libcurl-openssl1.0-dev
+          - zlib1g-dev
+          - unzip
+          - zip
+          - jq
+          - rsync
+        state: present
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Vericoin Wallet - Clone Vericoin Wallet
+      git:
+        repo: https://github.com/vericoin/vericoin.git
+        dest: "/home/vrc/wallet"
+        update: no
+      become: true
+      become_user: vrc
+
+    - name: Vericoin Wallet - Stat vericoin binary
+      stat:
+        path: "/home/vrc/wallet/src/vericoind"
+      register: vericoin_build
+      become: true
+      become_user: vrc
+
+    - name: Vericoin Wallet - Build
+      make:
+        chdir: /home/vrc/wallet/src
+        target: all
+        file: makefile.unix
+      when: vericoin_build.stat.exists == false
+      become: true
+      become_user: vrc
+
+    - name: Vericoin Wallet - Create wallet directory
+      file:
+        path: "/home/vrc/.vericoin"
+        state: directory
+        owner: "vrc"
+        group: "vrc"
+        mode: "0775"
+      become: true
+      become_user: vrc
+
+    - name: Vericoin Wallet - Stat vericoin bootstrap
+      stat:
+        path: "/home/vrc/.vericoin/blk0001.dat"
+      register: vericoin_bootstrap
+      become: true
+      become_user: vrc
+
+    - name: Vericoin Wallet - Create bootstrap directory
+      file:
+        path: "/home/vrc/bootstrap"
+        state: directory
+        owner: "vrc"
+        group: "vrc"
+        mode: "0775"
+      when: vericoin_bootstrap.stat.exists == false
+      become: true
+      become_user: vrc
+
+    - name: Vericoin Wallet - Download bootstrap
+      unarchive:
+        src: https://cdn.vericonomy.com/bootstrap.zip
+        dest: /home/vrc/bootstrap
+        remote_src: yes
+        creates: /home/vrc/bootstrap/bootstrap/blk0001.dat
+      when: vericoin_bootstrap.stat.exists == false
+      become: true
+      become_user: vrc
+
+    - name: Vericoin Wallet - Copy bootstrap to good directory
+      copy:
+        src: /home/vrc/bootstrap/bootstrap/
+        dest: /home/vrc/.vericoin/
+        remote_src: yes
+        force: yes
+      when: vericoin_bootstrap.stat.exists == false
+      become: true
+      become_user: vrc
+
+    - name: Vericoin Wallet - Clean bootstrap
+      file:
+        state: absent
+        path: /home/vrc/bootstrap/bootstrap
+
+    - name: Vericoin Wallet - Retrieve node list
+      uri:
+        url: "https://chainz.cryptoid.info/explorer/peers.nodes.dws?coin=vrc&subver=%2FVeritoshi%3A1.7.2%2F"
+        method: GET
+        return_content: yes
+      register: node_list_result
+
+    - name: Vericoin Wallet - Write Config File
+      template:
+        src: templates/wallet/vericoin.conf.j2
+        dest: /home/vrc/.vericoin/vericoin.conf
+        owner: vrc
+        group: vrc
+        mode: '0600'
+      vars:
+        node_list: "{{ node_list_result.json }}"
+      become: true
+      become_user: vrc
+
+    # Set vericoin service
+    - name: Vericoin Wallet - Create Service
+      template:
+        src: templates/wallet/vericoind.service.j2
+        dest: /etc/systemd/system/vericoind.service
+        mode: '0644'
+
+    # Start wallet
+    - name: Vericoin Wallet - Enable and start service
+      service:
+        name: vericoind
+        enabled: yes
+        state: started
+
+    # Add boostrap generator if needed
+    - name: Vericoin Wallet - Boostrap Generator
+      block:
+        - name: Vericoin Boostraper - Create scripts directory
+          file:
+            path: "/home/vrc/scripts"
+            state: directory
+            owner: "vrc"
+            group: "vrc"
+            mode: "0775"
+          become: true
+          become_user: vrc
+  
+        - name: Vericoin Boostraper - Copy bootstrap script
+          copy:
+            src: files/vrc-bootstrap.sh
+            dest: /home/vrc/scripts/bootstrap.sh
+            owner: vrc
+            group: vrc
+            mode: '0775'
+  
+        - name: Vericoin Boostraper - Add bootstrap generator crontab
+          cron:
+            name: Vericoin Bootstraper
+            job: "/home/vrc/scripts/bootstrap.sh >/dev/null 2>&1"
+            minute: "0"
+            hour: "1"
+            user: "vrc"
+      when: bootstrap_generator is defined and bootstrap_generator

@@ -1,0 +1,25 @@
+[Unit]
+Description=Vericoind Wallet
+Requires=network.target
+After=syslog.target network.target
+
+[Service]
+ExecStart=/home/vrc/wallet/src/vericoind -pid=/var/run/vericoind/vericoind.pid \
+                                        -conf=/home/vrc/.vericoin/vericoin.conf \
+                                        -daemon
+
+ExecStop=/home/vrc/wallet/src/vericoind stop
+Type=forking
+PIDFile=/var/run/vericoind/vericoind.pid
+{% if bootstrap_generator is defined and bootstrap_generator %}
+Restart=no
+{% else %}
+Restart=on-failure
+{% endif %}
+TimeoutStopSec=600
+User=vrc
+Group=vrc
+RuntimeDirectory=vericoind
+
+[Install]
+WantedBy=multi-user.target

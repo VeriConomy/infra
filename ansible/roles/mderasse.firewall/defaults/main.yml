@@ -1,0 +1,55 @@
+---
+# The Full role need to be executed in "become"
+ansible_become: yes
+
+# List of variables required for the run of that playbooks
+required_vars:
+  - firewall_public_ip
+
+# Firewall Config
+firewall_enabled_at_boot: true
+firewall_docker_mode: false
+
+# default policies
+firewall_default_input: ACCEPT
+firewall_default_output: ACCEPT
+firewall_default_forward: ACCEPT
+
+# Masquerade
+firewall_masquerade_enabled: false
+# If empty, all Ips are authorized
+firewall_masquerade_authorized_ips: []
+
+# manage ICMP
+firewall_icmp_accept: true
+firewall_icmp_limit: 5
+
+# Whitelist
+firewall_whitelist_ips_input: []
+firewall_whitelist_ips_output: []
+
+# Basic rules
+firewall_allowed_input_tcp_ports: []
+firewall_allowed_input_udp_ports: []
+firewall_allowed_output_tcp_ports:
+  - 21
+  - 22
+  - 53
+  - 80
+  - 443
+  - 9418
+  - 11371
+firewall_allowed_output_udp_ports:
+  - 53
+  - 123
+
+# Forwardings rules
+firewall_forwarded_tcp_ports: []
+firewall_forwarded_udp_ports: []
+
+# Additional custom rules
+firewall_additional_rules: []
+
+# Set to true to ensure other firewall management software is disabled.
+firewall_disable_firewalld: true
+firewall_disable_ufw: true

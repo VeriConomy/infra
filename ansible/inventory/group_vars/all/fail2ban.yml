@@ -1,0 +1,6 @@
+#### var for fail2ban role
+fail2ban_destmail: infra+fail2ban@vericonomy.com
+fail2ban_ignoreips:
+  - 127.0.0.1
+  - 10.0.0.0/24 
+
