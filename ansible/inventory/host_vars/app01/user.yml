@@ -1,3 +1,5 @@
 extra_users:
   exchange-alert:
     state: present
+  matterbridge:
+    state: present

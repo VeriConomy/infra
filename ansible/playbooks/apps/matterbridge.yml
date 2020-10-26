@@ -1,0 +1,29 @@
+- name: Matterbridge - Download binary
+  get_url:
+    url: https://github.com/42wim/matterbridge/releases/download/v1.19.0/matterbridge-1.19.0-linux-64bit
+    dest: /home/matterbridge/matterbridge
+    mode: '0755'
+  become: true
+  become_user: matterbridge
+
+- name: Matterbridge - Write Config File
+  template:
+    src: templates/apps/matterbridge.toml.j2
+    dest: /home/matterbridge/matterbridge.toml
+    owner: matterbridge
+    group: matterbridge
+    mode: '0600'
+  become: true
+  become_user: matterbridge
+
+- name: Matterbridge - Create Service
+  copy:
+    src: files/apps/matterbridge.service
+    dest: /etc/systemd/system/matterbridge.service
+    mode: '0644'
+
+- name: Matterbridge - Enable and start service
+  service:
+    name: matterbridge
+    enabled: yes
+    state: started

@@ -10,3 +10,4 @@
       with_items:
         - vrc-exchange-alert
         - vrm-exchange-alert
+        - matterbridge

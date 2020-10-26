@@ -16,7 +16,7 @@
 
 - name: VRM Exchange Alert - Write Config File
   template:
-    src: templates/bots/exchangeAlertConfig.json.j2
+    src: templates/apps/exchangeAlertConfig.json.j2
     dest: /home/exchange-alert/vrm/config.json
     owner: exchange-alert
     group: exchange-alert
@@ -39,5 +39,5 @@
 - name: VRM Exchange Alert - Add exchange alerter to crontab
   cron:
     name: VRM Exchange Alert
-    job: "/home/exchange-alert/vrm && /home/exchange-alert/vrm/exchangeAlert.pl > /dev/null 2>&1"
+    job: "cd /home/exchange-alert/vrm && /home/exchange-alert/vrm/exchangeAlert.pl >> /home/exchange-alert/vrm/run.log 2>&1"
     user: "exchange-alert"

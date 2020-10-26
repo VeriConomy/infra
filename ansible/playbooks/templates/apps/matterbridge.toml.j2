@@ -1,0 +1,139 @@
+###################################################################
+#slack section
+###################################################################
+[slack]
+[slack.vericonomy]
+Token="{{ matterbridge_slack_token }}"
+PreserveThreading=true
+ShowUserTyping=true
+SyncTopic=true
+EditDisable=false
+ShowTopicChange=true
+
+###################################################################
+#discord section
+###################################################################
+[discord]
+[discord.vericonomy]
+Token="{{ matterbridge_discord_token }}"
+Server="VeriCoin and Verium"
+SyncTopic=true
+WebhookURL="{{ matterbridge_discord_webhook }}"
+EditDisable=false
+ShowTopicChange=true
+
+###################################################################
+#telegram section
+###################################################################
+[telegram]
+[telegram.vericonomy]
+Token="{{ matterbridge_telegram_token }}"
+RemoteNickFormat="<b>{NICK} (On {PROTOCOL}):</b> "
+MessageFormat="HTMLNick"
+QuoteFormat="*Replying to @{QUOTENICK}: {QUOTEMESSAGE}:* {MESSAGE}"
+EditDisable=false
+IgnoreMessages="^/"
+ShowTopicChange=true
+
+###################################################################
+#General configuration
+###################################################################
+# Settings here are defaults that each protocol can override
+[general]
+RemoteNickFormat="{NICK} (On {PROTOCOL}): "
+ShowJoinPart=false
+MessageFormat="MarkdownV2"
+ReplaceMessages=[ ["@(?i)VeriTips","TIPS BOT"], ["@(?i)Veri(coin)?Bot", "VERI BOT"]  ]
+
+###################################################################
+#Gateway configuration
+###################################################################
+[[gateway]]
+name="announcements"
+enable=true
+    [[gateway.inout]]
+    account="discord.vericonomy"
+    channel="announcements"
+
+    [[gateway.inout]]
+    account="slack.vericonomy"
+    channel="announcements"
+
+[[gateway]]
+name="development"
+enable=true
+    [[gateway.inout]]
+    account="discord.vericonomy"
+    channel="development"
+
+    [[gateway.inout]]
+    account="slack.vericonomy"
+    channel="development"
+
+    [[gateway.inout]]
+    account="telegram.vericonomy"
+    channel="-1001248100526"
+
+[[gateway]]
+name="general"
+enable=true
+    [[gateway.inout]]
+    account="discord.vericonomy"
+    channel="general"
+
+    [[gateway.inout]]
+    account="slack.vericonomy"
+    channel="general"
+
+    [[gateway.inout]]
+    account="telegram.vericonomy"
+    channel="-1001227313132"
+
+[[gateway]]
+name="trading"
+enable=true
+    [[gateway.inout]]
+    account="discord.vericonomy"
+    channel="markets-and-trading"
+
+    [[gateway.inout]]
+    account="slack.vericonomy"
+    channel="markets-and-trading"
+
+    [[gateway.inout]]
+    account="telegram.vericonomy"
+    channel="-1001188505116"
+
+[[gateway]]
+name="offtopic"
+enable=true
+    [[gateway.inout]]
+    account="discord.vericonomy"
+    channel="offtopic"
+
+    [[gateway.inout]]
+    account="slack.vericonomy"
+    channel="offtopic"
+
+[[gateway]]
+name="techsupport"
+enable=true
+    [[gateway.inout]]
+    account="discord.vericonomy"
+    channel="techsupport"
+
+    [[gateway.inout]]
+    account="slack.vericonomy"
+    channel="techsupport"
+
+[[gateway]]
+name="mining"
+enable=true
+    [[gateway.inout]]
+    account="discord.vericonomy"
+    channel="mining"
+    
+    [[mining.inout]]
+    account="slack.vericonomy"
+    channel="verium-mining"
+

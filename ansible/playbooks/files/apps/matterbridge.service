@@ -1,0 +1,17 @@
+[Unit]
+Description=Matterbridge
+Requires=network.target
+After=syslog.target network.target
+
+[Service]
+WorkingDirectory=/home/matterbridge/
+ExecStart=/home/matterbridge/matterbridge -conf /home/matterbridge/matterbridge.toml
+Type=simple
+Restart=always
+TimeoutStartSec=60
+RestartSec=60
+User=matterbridge
+Group=matterbridge
+
+[Install]
+WantedBy=multi-user.target
