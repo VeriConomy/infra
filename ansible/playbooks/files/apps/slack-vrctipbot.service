@@ -1,0 +1,18 @@
+[Unit]
+Description=Slack VRC Tip Bot
+Requires=network.target
+After=syslog.target network.target
+
+[Service]
+WorkingDirectory=/home/vrctipbot/slack/src
+ExecStart=/usr/bin/node /home/vrctipbot/slack/src/bot.js
+EnvironmentFile=/home/vrctipbot/slack/env-config
+Type=simple
+Restart=always
+TimeoutStartSec=60
+RestartSec=60
+User=vrctipbot
+Group=vrctipbot
+
+[Install]
+WantedBy=multi-user.target

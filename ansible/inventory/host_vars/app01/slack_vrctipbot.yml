@@ -1,0 +1,6 @@
+slack_vrctipbot:
+  slack_token: "{{ slack_vrctipbot_slack_token }}"
+  wallet_host: "10.0.0.11"
+  wallet_port: 58683
+  wallet_user: "{{ slack_vrctipbot_wallet_user }}"
+  wallet_password: "{{ slack_vrctipbot_wallet_password }}"

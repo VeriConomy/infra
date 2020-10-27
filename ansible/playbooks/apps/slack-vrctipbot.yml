@@ -1,0 +1,46 @@
+- name: Slack VRC TipBot - Clone Repository
+  git:
+    repo: https://github.com/mderasse/slack-tipbot-vericoin.git
+    dest: "/home/vrctipbot/slack"
+    update: yes
+    force: yes
+    version: "master"
+  become: true
+  become_user: vrctipbot
+
+- name: Slack VRC TipBot - Install nodejs
+  include_role:
+    name: geerlingguy.nodejs
+
+- name: Slack VRC TipBot - Install NPM dependencies
+  npm:
+    path: "/home/vrctipbot/slack"
+    production: yes
+    state: latest
+  become: true
+  become_user: vrctipbot
+
+- name: Slack VRC TipBot - Add Config
+  template:
+    src: templates/apps/slack-tipbot.env.j2
+    dest: /home/vrctipbot/slack/env-config
+    owner: vrctipbot
+    group: vrctipbot
+    mode: '0600'
+  vars:
+    config: "{{ slack_vrctipbot }}"
+  become: true
+  become_user: vrctipbot
+
+- name: Slack VRC TipBot - Create Service
+  copy:
+    src: files/apps/slack-vrctipbot.service
+    dest: /etc/systemd/system/slack-vrctipbot.service
+    mode: '0644'
+
+- name: Slack VRC TipBot - Enable and start service
+  service:
+    name: slack-vrctipbot
+    enabled: yes
+    state: started
+

@@ -11,3 +11,4 @@
         - vrc-exchange-alert
         - vrm-exchange-alert
         - matterbridge
+        - slack-vrctipbot

@@ -3,3 +3,5 @@ extra_users:
     state: present
   matterbridge:
     state: present
+  vrctipbot:
+    state: present

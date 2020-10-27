@@ -18,4 +18,6 @@ firewall_allowed_output_udp_ports:
 firewall_additional_rules:
   - "iptables -t filter -A INPUT -p tcp -s 10.0.0.3 --dport 22 -j ACCEPT"
   - "iptables -t filter -A INPUT -p tcp -s 10.0.0.4 --dport 22 -j ACCEPT"
+  # VRC TIP BOT
+  - "iptables -t filter -A INPUT -p tcp -s 10.0.0.50 --dport 58683 -j ACCEPT"
 

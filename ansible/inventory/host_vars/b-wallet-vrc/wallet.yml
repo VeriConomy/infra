@@ -1,2 +1,4 @@
 wallet_port: 58686
 bootstrap_generator: yes
+rpcallowips:
+  - "127.0.0.1"

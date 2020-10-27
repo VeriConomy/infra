@@ -5,7 +5,9 @@ port={{ wallet_port | default(58684) }}
 
 rpcuser={{ wallet_username }}
 rpcpassword={{ wallet_password }}
-rpcallowip=127.0.0.1
+{% for ip in rpcallowips %}
+rpcallowip={{ ip }}
+{% endfor %}
 
 {% for node in node_list %}
 addnode={{ node }}
