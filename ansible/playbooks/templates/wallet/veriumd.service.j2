@@ -11,9 +11,7 @@ ExecStart=/home/vrm/wallet/src/veriumd -pid=/var/run/veriumd/veriumd.pid \
 ExecStop=/home/vrm/wallet/src/verium-cli stop
 Type=forking
 PIDFile=/var/run/veriumd/veriumd.pid
-{% if bootstrap_generator is defined and bootstrap_generator %}
-Restart=no
-{% else %}
+{% if bootstrap_generator is not defined or not bootstrap_generator %}
 Restart=on-failure
 {% endif %}
 TimeoutStopSec=600

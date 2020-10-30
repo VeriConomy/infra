@@ -1,0 +1,33 @@
+explorer:
+  user: "vrc"
+  app:
+    title: "Vericoin Block Explorer"
+    feport: 3000
+    port: 3001
+  coin:
+    name: "Vericoin"
+    symbol: "VRC"
+    min_confirmations: 10
+    type: "PoST"
+    github: "https://github.com/VeriConomy"
+    telegram: "https://t.me/VeriCoinandVerium/"
+    twitter: "https://twitter.com/vericonomy/"
+    reddit: "https://www.reddit.com/r/vericoin/"
+    facebook: "https://www.facebook.com/vericoin/"
+    slack: "https://slack.vericoin.info/"
+    site: "https://vericoin.info/"
+    coingecko_symbol: "vericoin"
+  rpc:
+    host: "http://10.0.0.11"
+    port: 58683
+    user: "{{ vrc_explorer_wallet_user }}"
+    password: "{{ vrc_explorer_wallet_password }}"
+  db:
+    host: "10.0.0.20"
+    port: 5432
+    user: "explorer_vrc"
+    password: "{{ vrc_explorer_db_password }}"
+    database: "explorer_vrc"
+  redis:
+    host: "10.0.0.30"
+    port: 6379

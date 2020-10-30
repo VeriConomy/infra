@@ -3,6 +3,15 @@ listen=1
 daemon=1
 port={{ wallet_port | default(58684) }}
 
+{% if txindex is defined and txindex %}
+txindex=1
+{% endif %}
+
+maxconnections={{ maxconnections| default(20) }}
+
+rcpbind=127.0.0.1
+rpcbind={{ ansible_default_ipv4.address }}
+
 rpcuser={{ wallet_username }}
 rpcpassword={{ wallet_password }}
 {% for ip in rpcallowips %}

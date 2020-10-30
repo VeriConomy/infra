@@ -13,6 +13,7 @@
     owner: matterbridge
     group: matterbridge
     mode: '0600'
+  register: app_conf
   become: true
   become_user: matterbridge
 
@@ -26,4 +27,5 @@
   service:
     name: matterbridge
     enabled: yes
-    state: started
+    state: restarted
+  when: app_conf.changed

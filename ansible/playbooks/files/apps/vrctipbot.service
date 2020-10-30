@@ -1,0 +1,17 @@
+[Unit]
+Description=VRC Tip Bot
+Requires=network.target
+After=syslog.target network.target
+
+[Service]
+WorkingDirectory=/home/vrctipbot/tipbot
+ExecStart=/usr/bin/python3 /home/vrctipbot/tipbot/webhooks.py
+Type=simple
+Restart=always
+TimeoutStartSec=60
+RestartSec=60
+User=vrctipbot
+Group=vrctipbot
+
+[Install]
+WantedBy=multi-user.target

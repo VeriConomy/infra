@@ -7,12 +7,13 @@ certbot_certs:
   - domains:
     - "vericonomy.com"
     - "www.vericonomy.com"
+    - "tips.vericonomy.com"
   # vrm vericonomy domain
-#  - domains:
-#    - "vrm.vericonomy.com"
-#    - "explorer.vrm.vericonomy.com"
+  - domains:
+    - "vrm.vericonomy.com"
+    - "explorer.vrm.vericonomy.com"
   # vrc vericonomy domain
-#  - domains:
-#    - "vrc.vericonomy.com"
-#    - "explorer.vrc.vericonomy.com"
+  - domains:
+    - "vrc.vericonomy.com"
+    - "explorer.vrc.vericonomy.com"
 

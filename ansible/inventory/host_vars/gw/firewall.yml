@@ -1,6 +1,6 @@
 # Firewall Setup
 firewall_default_input: DROP
-firewall_default_output: DROP
+firewall_default_output: ACCEPT
 firewall_default_forward: DROP
 firewall_allowed_input_tcp_ports:
   - 80

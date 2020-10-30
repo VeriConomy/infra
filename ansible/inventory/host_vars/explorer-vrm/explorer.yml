@@ -1,0 +1,33 @@
+explorer:
+  user: "vrm"
+  app:
+    title: "Verium Block Explorer"
+    feport: 3000
+    port: 3001
+  coin:
+    name: "Verium"
+    symbol: "VRM"
+    min_confirmations: 30
+    type: "PoW"
+    github: "https://github.com/VeriConomy"
+    telegram: "https://t.me/VeriCoinandVerium/"
+    twitter: "https://twitter.com/vericonomy/"
+    reddit: "https://www.reddit.com/r/vericoin/"
+    facebook: "https://www.facebook.com/vericoin/"
+    slack: "https://slack.vericoin.info/"
+    site: "https://vericoin.info/"
+    coingecko_symbol: "veriumreserve"
+  rpc:
+    host: "http://10.0.0.16"
+    port: 33987
+    user: "{{ vrm_explorer_wallet_user }}"
+    password: "{{ vrm_explorer_wallet_password }}"
+  db:
+    host: "10.0.0.20"
+    port: 5432
+    user: "explorer_vrm"
+    password: "{{ vrm_explorer_db_password }}"
+    database: "explorer_vrm"
+  redis:
+    host: "10.0.0.35"
+    port: 6379

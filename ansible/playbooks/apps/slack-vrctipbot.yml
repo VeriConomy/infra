@@ -29,6 +29,7 @@
     mode: '0600'
   vars:
     config: "{{ slack_vrctipbot }}"
+  register: app_conf
   become: true
   become_user: vrctipbot
 
@@ -42,5 +43,6 @@
   service:
     name: slack-vrctipbot
     enabled: yes
-    state: started
+    state: restarted
+  when: app_conf.changed
 

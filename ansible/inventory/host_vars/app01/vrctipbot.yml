@@ -1,0 +1,26 @@
+vrctipbot:
+  db:
+    host: "10.0.0.25"
+    user: "{{ vrctipbot_db_user }}"
+    password: "{{ vrctipbot_db_password }}"
+  currency:
+    id: "vericoin"
+    name: "Vericoin"
+    symbol: "VRC"
+  consumer_key: "{{ vrctipbot_consumer_key }}"
+  consumer_secret: "{{ vrctipbot_consumer_secret }}"
+  access_token: "{{ vrctipbot_access_token }}"
+  access_token_secret: "{{ vrctipbot_access_token_secret }}"
+  telegram_key: "{{ vrctipbot_telegram_key }}"
+  bot_id_twitter: "{{ vrctipbot_bot_id_twitter }}"
+  bot_id_telegram: "{{ vrctipbot_bot_id_telegram }}"
+  bot_name_telegram: "@VericoinBot"
+  bot_name_twitter: "@VeriTipBot"
+  bot_account: "{{ vrctipbot_bot_account }}"
+  wallet_ip: "10.0.0.11"
+  wallet_port: 58683
+  wallet_username: "{{ vrctipbot_wallet_user }}"
+  wallet_password: "{{ vrctipbot_wallet_password }}"
+  min_tip_amount: 1
+  min_tx_confirmation: 10
+  base_url: "https://tips.vericonomy.com"

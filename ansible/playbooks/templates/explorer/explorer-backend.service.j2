@@ -1,0 +1,17 @@
+[Unit]
+Description=Explorer Backend
+Requires=network.target
+After=syslog.target network.target
+
+[Service]
+WorkingDirectory=/home/{{ config.user }}/explorer
+ExecStart=/usr/bin/node /home/{{ config.user }}/explorer/packages/backend/dist/server.js
+Type=simple
+Restart=always
+TimeoutStartSec=60
+RestartSec=60
+User={{ config.user }}
+Group={{ config.user }}
+
+[Install]
+WantedBy=multi-user.target

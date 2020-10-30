@@ -1,8 +1,13 @@
 mysql_databases:
   - name: webdev
+  - name: tipbot
 
 mysql_users:
   - name: webdev
     host: "%"
     password: "{{ mysql_webdev_password }}"
     priv: "webdev.*:ALL"
+  - name: tipbot
+    host: "%"
+    password: "{{ mysql_tipbot_password }}"
+    priv: "tipbot.*:ALL"

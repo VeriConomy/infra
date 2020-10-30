@@ -1,0 +1,4 @@
+extra_users:
+  vrc:
+    shell: "/bin/false"
+    state: present

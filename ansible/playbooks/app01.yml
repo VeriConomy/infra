@@ -12,3 +12,4 @@
         - vrm-exchange-alert
         - matterbridge
         - slack-vrctipbot
+        - twitter-telegram-vrctipbot

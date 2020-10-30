@@ -146,6 +146,7 @@
         mode: '0600'
       vars:
         node_list: "{{ node_list_result.json }}"
+      register: app_conf
       become: true
       become_user: vrm
 
@@ -161,7 +162,8 @@
       service:
         name: veriumd
         enabled: yes
-        state: started
+        state: restarted
+      when: app_conf.changed
 
     # Add boostrap generator if needed
     - name: Verium Wallet - Boostrap Generator

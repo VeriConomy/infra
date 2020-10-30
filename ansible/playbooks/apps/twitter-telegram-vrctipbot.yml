@@ -1,0 +1,53 @@
+- name: VRC TipBot - Install dependencies
+  apt:
+    name:
+      - python3-pip
+      - libmariadbclient-dev
+
+- name: VRC TipBot - Clone Repository
+  git:
+    repo: https://github.com/mderasse/Vericoin-Twitter-Tipbot.git
+    dest: "/home/vrctipbot/tipbot"
+    update: no
+    update: yes
+    force: yes
+    version: "master"
+  become: true
+  become_user: vrctipbot
+
+- name: Install gunicorn python package
+  pip:
+    name: gunicorn
+
+- name: VRC TipBot - Install python requirements
+  pip:
+    chdir: "/home/vrctipbot/tipbot"
+    requirements: requirements.txt
+  become: true
+  become_user: vrctipbot
+
+- name: VRC TipBot - Add Config
+  template:
+    src: templates/apps/tipbot.ini.j2
+    dest: /home/vrctipbot/tipbot/webhookconfig.ini
+    owner: vrctipbot
+    group: vrctipbot
+    mode: '0600'
+  vars:
+    config: "{{ vrctipbot }}"
+  register: app_conf
+  become: true
+  become_user: vrctipbot
+
+- name: VRC TipBot - Create Service
+  copy:
+    src: files/apps/vrctipbot.service
+    dest: /etc/systemd/system/vrctipbot.service
+    mode: '0644'
+
+- name: VRC TipBot - Enable and start service
+  service:
+    name: vrctipbot
+    enabled: yes
+    state: started
+  when: app_conf.changed

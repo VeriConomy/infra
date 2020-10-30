@@ -1,0 +1,103 @@
+---
+- name: Install Block Explorer
+  hosts: explorer
+  become: yes
+  tasks:
+    - name: Explorer - Clone the repository
+      git:
+        repo: "https://github.com/VeriConomy/explorer.git"
+        dest: "/home/{{ explorer.user }}/explorer"
+        update: yes
+        force: true
+        version: "{{ explorer.user }}"
+      register: git_clone
+      become: true
+      become_user: "{{ explorer.user }}"
+
+    - name: Explorer - Install nodejs
+      include_role:
+        name: geerlingguy.nodejs
+
+    - name: Explorer - Install NPM dependencies
+      npm:
+        path: "/home/{{ explorer.user }}/explorer"
+        production: no
+        state: latest
+      become: true
+      become_user: "{{ explorer.user }}"
+
+    - name: Explorer - Install PM2 Globally
+      npm:
+        name: pm2
+        global: yes
+
+    - name: Explorer - Ensure install # Should check why upper it's not doing it ...
+      command: "npm install"
+      args:
+        chdir: "/home/{{ explorer.user }}/explorer"
+      become: true
+      become_user: "{{ explorer.user }}"
+
+    - name: Explorer - Special VRC
+      replace:
+        path: "/home/{{ explorer.user }}/explorer/packages/backend/src/server.ts"
+        regexp: 'jobChainTips.start'
+        replace: '// jobChainTips.start'
+        owner: "{{ explorer.user }}"
+        group: "{{ explorer.user }}"
+      become: true
+      become_user: "{{ explorer.user }}"
+      when: explorer.user == 'vrc'
+
+    - name: Explorer - Build
+      command: "npm run build"
+      args:
+        chdir: "/home/{{ explorer.user }}/explorer"
+      become: true
+      become_user: "{{ explorer.user }}"
+
+    - name: Explorer - Add Config
+      template:
+        src: templates/explorer/explorer.env.j2
+        dest: "/home/{{ explorer.user }}/explorer/.env"
+        owner: "{{ explorer.user }}"
+        group: "{{ explorer.user }}"
+        mode: '0600'
+      vars:
+        config: "{{ explorer }}"
+      register: app_conf
+      become: true
+      become_user: "{{ explorer.user }}"
+
+    - name: Explore - Add Labels
+      copy:
+        src: "files/explorer/{{ explorer.user }}-labels.json"
+        dest: "/home/{{ explorer.user }}/explorer/labels.json"
+        mode: '0644'
+        owner: "{{ explorer.user }}"
+        group: "{{ explorer.user }}"
+      become: true
+      become_user: "{{ explorer.user }}"
+
+    - name: Explorer - Service
+      template:
+        src: "templates/explorer/{{ item }}.service.j2"
+        dest: "/etc/systemd/system/{{ item }}.service"
+        mode: '0644'
+      vars:
+        config: "{{ explorer }}"
+      with_items:
+        - explorer-backend
+        - explorer-frontend
+        - explorer-api
+
+    - name: Explorer - Enable and start service
+      service:
+        name: "{{ item }}"
+        enabled: yes
+        state: restarted
+      with_items:
+        - explorer-backend
+        - explorer-frontend
+        - explorer-api
+      when: "git_clone.changed or app_conf.changed"

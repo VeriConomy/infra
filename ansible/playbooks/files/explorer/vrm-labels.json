@@ -1,0 +1,18 @@
+[
+  {"address": "VRj5GQJqZfDDkUgB1HonLUsaS1WAoP6EgV", "label" : "Mining-pool"},
+  {"address": "VEZj1EJWsGy94x9CTaxomVaB16FbNA6K8n", "label" : "Mining-pool"},
+  {"address": "VEmBZT5heoEPrb7ny3BVdHLErXJgjhXtjV", "label" : "Blockbucket"},
+  {"address": "VQburP5ZpueiPCwrT5HVRmtP4nmZisuUZe", "label" : "Poolinat0r 1"},
+  {"address": "VVRSUdYjjo3ghdFkmyduyw2CqfZf1CidKc", "label" : "Poolinat0r 2"},
+  {"address": "VHg57bGcxkcui6j3Y4t1i87eW5weQdvRCy", "label" : "Poolsloth"},
+  {"address": "VMFjygiefp5rYCjFgNAwpK48x36VJUnchv", "label" : "The Beer Pool"},
+  {"address": "VHMWvtrNoaEqz3Yu1EnzRWTFLYrM5KqETx", "label" : "N3rd3d"},
+  {"address": "VC5CNoybRsBtm2y1eawcXU55cGFTyHvScS", "label" : "Poolium"},
+  {"address": "VKq6ZhpqjQnWAtA6XEj36wtoUjjcejJYdd", "label" : "Raspi-Ninja"},
+  {"address": "VVVcus41vZyCPhnbQgHWhLQiLrHX9uwHuu", "label" : "FactoryDefault"},
+  {"address": "VNaiAvgFD3zWzj6X4ECLYcKk31VsdRXyaW", "label" : "Bitcoinemail"},
+  {"address": "VVggkUH7utJkw7YV1awgs5qC6c19S3MzRj", "label" : "1stpool"},
+  {"address": "VFgrJNT3eSuXqpg2JcGjjtAk2NkimwVrGj", "label" : "Zergpool"},
+  {"address": "VFPSFUJgQZyGiet5USCSDA4nQuhjaW6iLq", "label" : "Xpoolx"},
+  {"address": "VKJQH2jFtRatjtrPeSR6h8K54TxLYCkRAW", "label" : "SkyPool"}
+]

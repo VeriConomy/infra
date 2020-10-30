@@ -1,0 +1,35 @@
+[main]
+host = {{ config.db.host }}
+user = {{ config.db.user }}
+password = {{ config.db.password }}
+bot_status =
+currency = {{ config.currency.id }}
+
+[{{ config.currency.id }}]
+currency_name = {{ config.currency.name }}
+currency_symbol = {{ config.currency.symbol }}
+consumer_key = {{ config.consumer_key }}
+consumer_secret = {{ config.consumer_secret }}
+access_token = {{ config.access_token }}
+access_token_secret = {{ config.access_token_secret }}
+telegram_key = {{ config.telegram_key }}
+schema = tipbot
+bot_id_twitter = {{ config.bot_id_twitter }}
+bot_id_telegram = {{ config.bot_id_telegram }}
+bot_name_telegram = {{ config.bot_name_telegram }}
+bot_name_twitter = {{ config.bot_name_twitter }}
+bot_account = {{ config.bot_account }}
+wallet_ip = {{ config.wallet_ip }}
+wallet_port = {{ config.wallet_port }}
+wallet_username = {{ config.wallet_username }}
+wallet_password = {{ config.wallet_password }}
+min_tip = {{ config.min_tip_amount }}
+min_tx_confirmation = {{ config.min_tx_confirmation }}
+
+[routes]
+twitter_uri = /twitterapi/
+telegram_uri = /telegramapi/
+telegram_set_uri = /telegramsetapi/
+base_url = {{ config.base_url }}
+vericoin_url = https://www.vericoin.info
+vericoin_explorer = https://chainz.cryptoid.info/vrc/
