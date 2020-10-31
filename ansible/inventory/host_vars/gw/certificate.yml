@@ -8,12 +8,12 @@ certbot_certs:
     - "vericonomy.com"
     - "www.vericonomy.com"
     - "tips.vericonomy.com"
-  # vrm vericonomy domain
-  - domains:
-    - "vrm.vericonomy.com"
-    - "explorer.vrm.vericonomy.com"
-  # vrc vericonomy domain
-  - domains:
+    - "explorer-vrc.vericonomy.com"
     - "vrc.vericonomy.com"
-    - "explorer.vrc.vericonomy.com"
-
+    - "vrm.vericonomy.com"
+    - "explorer-vrm.vericonomy.com"
+    - "slack.vericonomy.com"
+  # vericoin migration domain
+  - domains:
+    - "veriumstats.vericoin.info"
+    - "slack.vericoin.info"

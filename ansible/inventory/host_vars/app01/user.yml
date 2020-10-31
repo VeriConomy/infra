@@ -5,3 +5,5 @@ extra_users:
     state: present
   vrctipbot:
     state: present
+  slackin:
+    state: present

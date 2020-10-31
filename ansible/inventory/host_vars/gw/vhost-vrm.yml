@@ -47,10 +47,10 @@ vhost_vrm:
               - "break"
           - location: "/"
             custom_options:
-              - "return 301 https://vericoin.info/$request_uri"
+              - "return 301 https://vericoin.info$request_uri"
       ssl:
-        cert: "/etc/letsencrypt/live/vrm.vericonomy.com/fullchain.pem"
-        key: "/etc/letsencrypt/live/vrm.vericonomy.com/privkey.pem"
+        cert: "/etc/letsencrypt/live/vericonomy.com/fullchain.pem"
+        key: "/etc/letsencrypt/live/vericonomy.com/privkey.pem"
         dhparam: /etc/ssl/dhparam4.pem
         protocols: TLSv1 TLSv1.1 TLSv1.2
         ciphers: HIGH:!aNULL:!MD5
@@ -60,13 +60,13 @@ vhost_vrm:
         disable_session_tickets: true
         stapling: false
         stapling_verify: false
-    # explorer.vrm.vericonomy.com - SSL Redirection
+    # explorer-vrm.vericonomy.com - SSL Redirection
     explorer-vrm-ssl-redirect:
       listen:
         listen_http:
           port: 80
           ssl: false
-      server_name: "explorer.vrm.vericonomy.com"
+      server_name: "explorer-vrm.vericonomy.com"
       error_page: /usr/share/nginx/html/error/_site
       web_server:
         http_demo_conf: false
@@ -80,13 +80,13 @@ vhost_vrm:
           - location: "/"
             custom_options:
               - "return 301 https://$server_name$request_uri"
-    # explorer.vrm.vericonomy.com
+    # explorer-vrm.vericonomy.com
     explorer-vrm-ssl:
       listen:
         listen_https:
           port: 443
           ssl: true
-      server_name: "explorer.vrm.vericonomy.com"
+      server_name: "explorer-vrm.vericonomy.com"
       error_page: /usr/share/nginx/html/error/_site
       autoindex: false
       web_server:
@@ -134,8 +134,8 @@ vhost_vrm:
             proxy_pass: http://vrm-explorer-api
             websocket: true
       ssl:
-        cert: "/etc/letsencrypt/live/vrm.vericonomy.com/fullchain.pem"
-        key: "/etc/letsencrypt/live/vrm.vericonomy.com/privkey.pem"
+        cert: "/etc/letsencrypt/live/vericonomy.com/fullchain.pem"
+        key: "/etc/letsencrypt/live/vericonomy.com/privkey.pem"
         dhparam: /etc/ssl/dhparam4.pem
         protocols: TLSv1 TLSv1.1 TLSv1.2
         ciphers: HIGH:!aNULL:!MD5

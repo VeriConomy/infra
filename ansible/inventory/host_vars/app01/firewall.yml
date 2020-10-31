@@ -11,3 +11,5 @@ firewall_additional_rules:
   - "iptables -t filter -A OUTPUT -p tcp -d 10.0.0.25 --dport 3306 -j ACCEPT"
   # VRC TIP BOT WEB
   - "iptables -t filter -A INPUT -p tcp -s 10.0.0.2 --dport 3003 -j ACCEPT"
+  # SLACK INVITE
+  - "iptables -t filter -A INPUT -p tcp -s 10.0.0.2 --dport 3004 -j ACCEPT"

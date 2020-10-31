@@ -51,7 +51,7 @@ vhost_vericonomy:
               - "break"
           - location: "/"
             custom_options:
-              - "return 301 https://vericoin.info/$request_uri"
+              - "return 301 https://vericoin.info$request_uri"
       ssl:
         cert: "/etc/letsencrypt/live/vericonomy.com/fullchain.pem"
         key: "/etc/letsencrypt/live/vericonomy.com/privkey.pem"
@@ -104,7 +104,7 @@ vhost_vericonomy:
               - "break"
           - location: "/"
             custom_options:
-              - "return 301 https://vericoin.info/$request_uri"
+              - "return 301 https://vericoin.info$request_uri"
       ssl:
         cert: "/etc/letsencrypt/live/vericonomy.com/fullchain.pem"
         key: "/etc/letsencrypt/live/vericonomy.com/privkey.pem"
@@ -208,7 +208,7 @@ vhost_vericonomy:
           - location: "/"
             custom_options:
               - "return 301 https://$server_name$request_uri"
-    # tips.vericonomy.com - use web backend
+    # tips.vericonomy.com - use tipbot backend
     tips-ssl:
       listen:
         listen_https:
@@ -247,6 +247,59 @@ vhost_vericonomy:
               verify: off
             proxy_pass: http://tipbot
             websocket: true
+      ssl:
+        cert: "/etc/letsencrypt/live/vericonomy.com/fullchain.pem"
+        key: "/etc/letsencrypt/live/vericonomy.com/privkey.pem"
+        dhparam: /etc/ssl/dhparam4.pem
+        protocols: TLSv1 TLSv1.1 TLSv1.2
+        ciphers: HIGH:!aNULL:!MD5
+        prefer_server_ciphers: true
+        session_cache: shared:SSL:10m
+        session_timeout: 10m
+        disable_session_tickets: true
+        stapling: false
+        stapling_verify: false
+    # slack.vericonomy.com - SSL Redirection
+    slack-ssl-redirect:
+      listen:
+        listen_http:
+          port: 80
+          ssl: false
+      server_name: "slack.vericonomy.com"
+      error_page: /usr/share/nginx/html/error/_site
+      web_server:
+        http_demo_conf: false
+        locations:
+          - location: "^~ /.well-known/acme-challenge/"
+            custom_options:
+              - "allow all"
+              - "default_type \"text/plain\""
+              - "root /home/www/letsencrypt"
+              - "break"
+          - location: "/"
+            custom_options:
+              - "return 301 https://$server_name$request_uri"
+    # slack.vericonomy.com - use slackinvite backend
+    tips-ssl:
+      listen:
+        listen_https:
+          port: 443
+          ssl: true
+      server_name: "slack.vericonomy.com"
+      error_page: /usr/share/nginx/html/error/_site
+      autoindex: false
+      web_server:
+        http_demo_conf: false
+        locations:
+          - location: "^~ /.well-known/acme-challenge/"
+            custom_options:
+              - "allow all"
+              - "default_type \"text/plain\""
+              - "root /home/www/letsencrypt"
+              - "break"
+          - location: "/"
+            custom_options:
+              - "return 301 https://join.slack.com/t/vericoinandverium/shared_invite/zt-3qaoa37p-MqeoSSlqp6KEa4oeGZgS4g"
       ssl:
         cert: "/etc/letsencrypt/live/vericonomy.com/fullchain.pem"
         key: "/etc/letsencrypt/live/vericonomy.com/privkey.pem"

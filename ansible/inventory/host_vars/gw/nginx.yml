@@ -5,3 +5,5 @@ nginx_http_template:
   vrm: "{{ vhost_vrm }}"
   vrc: "{{ vhost_vrc }}"
   administration: "{{ vhost_administration }}"
+  # Redirect old domain to new one
+  vericoin: "{{vhost_vericoin }}"
