@@ -124,6 +124,9 @@ vhost_vrm:
               - name: X-Frame-Options
                 value: SAMEORIGIN
                 always: true
+              - name: Cache-Control
+                value: "no-store"
+                always: true
             proxy_set_header:
               - name: X-Real-IP
                 value: $remote_addr
