@@ -56,12 +56,16 @@ vhost_administration:
                 value: SAMEORIGIN
                 always: true
             proxy_set_header:
+              - name: Host
+                value: $host
               - name: X-Real-IP
                 value: $remote_addr
               - name: X-Forwarded-For
                 value: $proxy_add_x_forwarded_for
               - name: X-Forwarded-Proto
                 value: $scheme
+            proxy_read_timeout: 10000
+            proxy_connect_timeout: 10000
             proxy_ssl:
               verify: off
             proxy_pass: https://srv01

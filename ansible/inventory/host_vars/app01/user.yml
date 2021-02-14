@@ -7,3 +7,5 @@ extra_users:
     state: present
   slackin:
     state: present
+  vrmelectrumx:
+    state: present

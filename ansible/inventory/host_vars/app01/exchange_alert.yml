@@ -13,5 +13,5 @@ exchangeAlert:
     to: "BTC"
     fiat: "USDT"
     tickerAlertPercentage: 10
-    tradeMinAmount: 10000
+    tradeMinAmount: 14000
     tradeMinPercentage: 10

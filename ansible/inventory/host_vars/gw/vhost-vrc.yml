@@ -109,12 +109,16 @@ vhost_vrc:
                 value: SAMEORIGIN
                 always: true
             proxy_set_header:
+              - name: Host
+                value: $host
               - name: X-Real-IP
                 value: $remote_addr
               - name: X-Forwarded-For
                 value: $proxy_add_x_forwarded_for
               - name: X-Forwarded-Proto
                 value: $scheme
+            proxy_read_timeout: 10000
+            proxy_connect_timeout: 10000
             proxy_pass: http://vrc-explorer-frontend
           - location: /rest
             add_headers:
@@ -128,12 +132,16 @@ vhost_vrc:
                 value: "no-store"
                 always: true
             proxy_set_header:
+              - name: Host
+                value: $host
               - name: X-Real-IP
                 value: $remote_addr
               - name: X-Forwarded-For
                 value: $proxy_add_x_forwarded_for
               - name: X-Forwarded-Proto
                 value: $scheme
+            proxy_read_timeout: 10000
+            proxy_connect_timeout: 10000
             proxy_pass: http://vrc-explorer-api
             websocket: true
       ssl:

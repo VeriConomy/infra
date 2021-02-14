@@ -8,8 +8,9 @@
       include_tasks:
         file: "apps/{{ item }}.yml"
       with_items:
-        - vrc-exchange-alert
-        - vrm-exchange-alert
-        - matterbridge
-        - slack-vrctipbot
-        - twitter-telegram-vrctipbot
+        #- vrc-exchange-alert
+        #- vrm-exchange-alert
+        #- matterbridge
+        #- slack-vrctipbot
+        #- twitter-telegram-vrctipbot
+        - vrm-electrumx

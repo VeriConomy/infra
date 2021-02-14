@@ -13,6 +13,8 @@ certbot_certs:
     - "vrm.vericonomy.com"
     - "explorer-vrm.vericonomy.com"
     - "slack.vericonomy.com"
+    - "files.vericonomy.com"
+    - "cdn.vericonomy.com"
   # vericoin migration domain
   - domains:
     - "veriumstats.vericoin.info"

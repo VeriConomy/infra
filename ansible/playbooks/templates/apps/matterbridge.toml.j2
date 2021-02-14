@@ -16,11 +16,12 @@ ShowTopicChange=true
 [discord]
 [discord.vericonomy]
 Token="{{ matterbridge_discord_token }}"
-Server="VeriCoin and Verium"
+Server="VeriConomy - VeriCoin and Verium"
 SyncTopic=true
-WebhookURL="{{ matterbridge_discord_webhook }}"
+#WebhookURL="{{ matterbridge_discord_webhook }}"
 EditDisable=false
 ShowTopicChange=true
+AutoWebhooks=true
 
 ###################################################################
 #telegram section
@@ -137,3 +138,13 @@ enable=true
     account="slack.vericonomy"
     channel="verium-mining"
 
+[[gateway]]
+name="research"
+enable=true
+    [[gateway.inout]]
+    account="discord.vericonomy"
+    channel="research"
+
+    [[gateway.inout]]
+    account="slack.vericonomy"
+    channel="research"

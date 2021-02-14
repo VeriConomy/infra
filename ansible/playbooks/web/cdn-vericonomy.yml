@@ -1,0 +1,17 @@
+- name: Virtual Host - Create cdn directory
+  file:
+    path: "/home/www/vericonomy/cdn"
+    state: directory
+    recurse: yes
+    owner: "www-data"
+    group: "www-data"
+    mode: u=rwX,g=rX,o=rX
+
+- name: Virtual Host - Change permission of cdn
+  file:
+    path: "/home/www/vericonomy/cdn"
+    state: directory
+    recurse: yes
+    owner: "www-data"
+    group: "www-data"
+    mode: u=rwX,g=rX,o=rX

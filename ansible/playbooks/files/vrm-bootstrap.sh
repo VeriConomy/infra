@@ -6,7 +6,7 @@ mkdir -p $HOMEDIR/bootstrap/done
 
 # Cleanup
 rm -rf $HOMEDIR/bootstrap/doing/*
-find $HOMEDIR/bootstrap/done/ -mtime +5 -exec rm {} \;
+find $HOMEDIR/bootstrap/done/ -mtime +3 -exec rm {} \;
 
 # stop wallet
 $HOMEDIR/wallet/src/verium-cli stop || true

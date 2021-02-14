@@ -1,0 +1,85 @@
+- name: VRM Electrumx - Clone Repository
+  git:
+    repo: https://github.com/VeriConomy/electrumx.git
+    dest: "/home/vrmelectrumx/electrumx"
+    update: yes
+    force: yes
+    version: "master"
+  become: true
+  become_user: vrmelectrumx
+
+
+- name: VRM Electrumx - Install dependencies
+  apt:
+    name:
+      - build-essential
+      - librocksdb-dev
+      - libsnappy-dev
+      - zlib1g-dev
+      - libbz2-dev
+      - libgflags-dev
+      - liblz4-dev
+      - libzstd-dev
+      - git-core
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: VRM Electrumx - Install Global python requirements
+  pip:
+    chdir: "/home/vrmelectrumx/electrumx"
+    name:
+      - python-rocksdb>=0.6.9
+  become: true
+
+- name: VRM Electrumx - Install python requirements
+  pip:
+    chdir: "/home/vrmelectrumx/electrumx"
+    name:
+      - aiorpcX[ws]>=0.18.5,<0.19
+      - attrs
+      - plyvel
+      - pylru
+      - aiohttp>=3.3,<4
+      - python-rapidjson>=0.4.1,<1.0.0
+      - ujson>=2.0.0,<4.0.0
+      - uvloop>=0.14
+      - pycryptodomex>=3.8.1
+  become: true
+  become_user: vrmelectrumx
+
+- name: VRM Electrumx - Create db directory
+  file:
+    path: "/home/vrmelectrumx/database"
+    state: directory
+    owner: "vrmelectrumx"
+    group: "vrmelectrumx"
+    mode: "0755"
+  become: true
+  become_user: vrmelectrumx
+
+- name: VRM Electrumx - Add Config
+  template:
+    src: templates/apps/electrumx.conf.j2
+    dest: /home/vrmelectrumx/vrm.conf
+    owner: vrmelectrumx
+    group: vrmelectrumx
+    mode: '0600'
+  vars:
+    config: "{{ vrmelectrumx }}"
+  register: app_conf
+  become: true
+  become_user: vrmelectrumx
+
+- name: VRM Electrumx - Create Service
+  copy:
+    src: files/apps/vrmelectrumx.service
+    dest: /etc/systemd/system/vrmelectrumx.service
+    mode: '0644'
+
+- name: VRM Electrumx - Enable and start service
+  service:
+    name: vrmelectrumx
+    enabled: yes
+    state: started
+  when: app_conf.changed

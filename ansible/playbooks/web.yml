@@ -82,6 +82,7 @@
       include_tasks:
         file: "web/{{ item }}.yml"
       with_items:
+        - cdn-vericonomy
         - files-vericonomy
 
   roles:

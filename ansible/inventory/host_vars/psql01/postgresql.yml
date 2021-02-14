@@ -13,3 +13,10 @@ postgresql_users:
   - name: explorer_vrc
     password: "{{ user_explorer_vrc_password }}"
     state: present
+
+
+postgresql_global_config_options:
+  - option: "shared_buffers"
+    value: "256MB"
+  - option: "effective_cache_size"
+    value: "512MB"

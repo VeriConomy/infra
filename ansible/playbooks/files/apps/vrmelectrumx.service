@@ -1,0 +1,19 @@
+[Unit]
+Description=VRM ElectrumX server
+Requires=network.target
+After=syslog.target network.target
+
+[Service]
+WorkingDirectory=/home/vrmelectrumx/electrumx
+EnvironmentFile=/home/vrmelectrumx/vrm.conf
+ExecStart=/usr/bin/python3 /home/vrmelectrumx/electrumx/electrumx_server
+Type=simple
+Restart=always
+TimeoutStartSec=60
+RestartSec=60
+User=vrmelectrumx
+Group=vrmelectrumx
+LimitNOFILE=8192
+
+[Install]
+WantedBy=multi-user.target
