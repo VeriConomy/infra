@@ -14,5 +14,7 @@
   {"address": "VVggkUH7utJkw7YV1awgs5qC6c19S3MzRj", "label" : "1stpool"},
   {"address": "VFgrJNT3eSuXqpg2JcGjjtAk2NkimwVrGj", "label" : "Zergpool"},
   {"address": "VFPSFUJgQZyGiet5USCSDA4nQuhjaW6iLq", "label" : "Xpoolx"},
-  {"address": "VKJQH2jFtRatjtrPeSR6h8K54TxLYCkRAW", "label" : "SkyPool"}
+  {"address": "VUWYyVQRQPXGzGwYqmdPhwp7RiYUmT2sPv", "label" : "Xpoolx"},
+  {"address": "VKJQH2jFtRatjtrPeSR6h8K54TxLYCkRAW", "label" : "SkyPool"},
+  {"address": "VR3kUvzM6QjhTsZ3KmGzdwnEDQvdrwcEXb", "label" : "ZPool"}
 ]
