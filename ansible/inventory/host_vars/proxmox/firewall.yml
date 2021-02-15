@@ -16,6 +16,12 @@ firewall_forwarded_tcp_ports:
   - src_port: 443
     dest_ip: "10.0.0.2"
     dest_port: 443
+  - src_port: 50001
+    dest_ip: "10.0.0.2"
+    dest_port: 50001
+  - src_port: 50002
+    dest_ip: "10.0.0.2"
+    dest_port: 50002
     # Wallet
   - src_port: 36988
     dest_ip: "10.0.0.16"
@@ -23,6 +29,12 @@ firewall_forwarded_tcp_ports:
   - src_port: 36990
     dest_ip: "10.0.0.15"
     dest_port: 36990
+  - src_port: 58684
+    dest_ip: "10.0.0.11"
+    dest_port: 58684
+  - src_port: 58686
+    dest_ip: "10.0.0.10"
+    dest_port: 58686
 firewall_additional_rules:
   - "iptables -t filter -A INPUT -p tcp -s 10.0.0.2 --dport 8006 -j ACCEPT"
   - "iptables -t filter -A INPUT -p tcp -s 10.0.0.3 --dport 22 -j ACCEPT"

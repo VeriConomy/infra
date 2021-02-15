@@ -66,7 +66,7 @@
     group: vrmelectrumx
     mode: '0600'
   vars:
-    config: "{{ vrmelectrumx }}"
+    config: "{{ electrumx.vrm }}"
   register: app_conf
   become: true
   become_user: vrmelectrumx

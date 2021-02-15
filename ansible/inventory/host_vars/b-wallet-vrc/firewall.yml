@@ -2,6 +2,10 @@
 firewall_default_input: DROP
 firewall_default_output: DROP
 firewall_default_forward: DROP
+firewall_allowed_input_tcp_ports:
+  - 58686
+firewall_allowed_input_udp_ports:
+  - 58686
 firewall_allowed_output_tcp_ports:
   - 21
   - 22

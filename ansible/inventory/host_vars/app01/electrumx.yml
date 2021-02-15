@@ -1,0 +1,8 @@
+electrumx:
+  vrm:
+    wallet_ip: "10.0.0.16"
+    wallet_port: 33987
+    wallet_username: "{{ elecrtumx_vrm_wallet_user }}"
+    wallet_password: "{{ electrumx_vrm_wallet_password }}"
+    db_directory: /home/vrmelectrumx/database
+    coin_name: Verium

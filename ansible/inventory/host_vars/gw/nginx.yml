@@ -1,5 +1,6 @@
 # Configure Nginx
-nginx_stream_template: {}
+nginx_stream_template:
+  default: "{{ stream_vericonomy }}"
 nginx_http_template:
   default: "{{ vhost_vericonomy }}"
   vrm: "{{ vhost_vrm }}"

@@ -24,4 +24,5 @@ firewall_additional_rules:
   - "iptables -t filter -A INPUT -p tcp -s 10.0.0.4 --dport 22 -j ACCEPT"
   # Explorer
   - "iptables -t filter -A INPUT -p tcp -s 10.0.0.65 --dport 33987 -j ACCEPT"
-
+  # Electrumx
+  - "iptables -t filter -A INPUT -p tcp -s 10.0.0.50 --dport 33987 -j ACCEPT"

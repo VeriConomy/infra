@@ -1,0 +1,30 @@
+#################################################################
+#                    VERICONOMY DOMAIN                          #
+#                                                               #
+#################################################################
+stream_vericonomy:
+  template_file: stream/default.conf.j2
+  conf_file_name: "stream-vericonomy.conf"
+  conf_file_location: /etc/nginx/conf.d/stream/
+  network_streams:
+    electrumx_vrm_01:
+      listen_port: 50001
+      udp_enable: false
+      health_check_plus: false
+      proxy_protocol: no
+      proxy_pass: "proxy_electrumx_vrm_01"
+      proxy_timeout: "10m"
+      proxy_connect_timeout: "1m"
+  upstreams:
+   proxy_electrumx_vrm_01:
+      name: proxy_electrumx_vrm_01
+      lb_method: least_conn
+      zone_name: proxy_electrumx_vrm_01
+      zone_size: 64k
+      sticky_cookie: false
+      servers:
+        electrumx_vrm_01:
+          address: "10.0.0.50"
+          port: 50001
+          weight: 1
+          health_check: max_fails=3 fail_timeout=20s

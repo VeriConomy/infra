@@ -7,9 +7,14 @@ firewall_additional_rules:
   - "iptables -t filter -A INPUT -p tcp -s 10.0.0.4 --dport 22 -j ACCEPT"
   # WALLET VRC
   - "iptables -t filter -A OUTPUT -p tcp -d 10.0.0.11 --dport 58683 -j ACCEPT"
+  # WALLET VRM
+  - "iptables -t filter -A OUTPUT -p tcp -d 10.0.0.16 --dport 33987 -j ACCEPT"
   # MYSQL
   - "iptables -t filter -A OUTPUT -p tcp -d 10.0.0.25 --dport 3306 -j ACCEPT"
   # VRC TIP BOT WEB
   - "iptables -t filter -A INPUT -p tcp -s 10.0.0.2 --dport 3003 -j ACCEPT"
   # SLACK INVITE
   - "iptables -t filter -A INPUT -p tcp -s 10.0.0.2 --dport 3004 -j ACCEPT"
+  # ELECTRUMX
+  - "iptables -t filter -A INPUT -p tcp -s 10.0.0.2 --dport 50001 -j ACCEPT"
+  - "iptables -t filter -A INPUT -p tcp -s 10.0.0.2 --dport 50002 -j ACCEPT"
