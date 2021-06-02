@@ -38,17 +38,6 @@
       become: true
       become_user: "{{ explorer.user }}"
 
-    - name: Explorer - Special VRC
-      replace:
-        path: "/home/{{ explorer.user }}/explorer/packages/backend/src/server.ts"
-        regexp: 'jobChainTips.start'
-        replace: '// jobChainTips.start'
-        owner: "{{ explorer.user }}"
-        group: "{{ explorer.user }}"
-      become: true
-      become_user: "{{ explorer.user }}"
-      when: explorer.user == 'vrc'
-
     - name: Explorer - Build
       command: "npm run build"
       args:
