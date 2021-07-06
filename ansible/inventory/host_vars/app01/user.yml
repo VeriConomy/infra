@@ -9,3 +9,5 @@ extra_users:
     state: present
   vrmelectrumx:
     state: present
+  vrcelectrumx:
+    state: present

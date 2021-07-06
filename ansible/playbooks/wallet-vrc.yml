@@ -1,27 +1,35 @@
 ---
-- name: Install VRC Wallet and bootstrap
+ name: Install VRC Wallet and bootstrap
   hosts: wallet_vrc
   become: yes
   tasks:
     - name: Vericoin Wallet - Install dependencies
       apt:
         name:
+          - git
           - build-essential
-          - libboost-dev
+          - libtool
+          - autotools-dev
+          - automake
+          - pkg-config
+          - libssl-dev
+          - libevent-dev
+          - bsdmainutils
+          - python3
+          - libcurl4-openssl-dev
           - libboost-system-dev
           - libboost-filesystem-dev
-          - libboost-thread-dev
-          - libdb++-dev
+          - libboost-chrono-dev
           - libboost-program-options-dev
-          - libminiupnpc-dev
-          - libboost-all-dev
-          - libqrencode-dev
-          - freeglut3-dev
+          - libboost-test-dev
+          - libboost-thread-dev
           - libminizip-dev
-          - libssl1.0-dev
-          - libcurl3
-          - libcurl-openssl1.0-dev
           - zlib1g-dev
+          - libprotobuf-dev
+          - protobuf-compiler
+          - libqrencode-dev
+          - libdb-dev
+          - libdb++-dev
           - unzip
           - zip
           - jq
@@ -32,9 +40,10 @@
 
     - name: Vericoin Wallet - Clone Vericoin Wallet
       git:
-        repo: https://github.com/vericoin/vericoin.git
+        repo: https://github.com/VeriConomy/vericoin.git
         dest: "/home/vrc/wallet"
         update: no
+        version: "master"
       become: true
       become_user: vrc
 
@@ -45,18 +54,42 @@
       become: true
       become_user: vrc
 
+    - name: Vericoin Wallet - AutoGen
+      command: "./autogen.sh"
+      args:
+        chdir: /home/vrc/wallet
+      when: vericoin_build.stat.exists == false
+      become: true
+      become_user: vrc
+
+    - name: Vericoin Wallet - Configure
+      command: "./configure"
+      args:
+        chdir: /home/vrc/wallet
+      when: vericoin_build.stat.exists == false
+      become: true
+      become_user: vrc
+
     - name: Vericoin Wallet - Build
       make:
-        chdir: /home/vrc/wallet/src
-        target: all
-        file: makefile.unix
+        chdir: /home/vrc/wallet
       when: vericoin_build.stat.exists == false
       become: true
       become_user: vrc
 
     - name: Vericoin Wallet - Create wallet directory
       file:
-        path: "/home/vrc/.vericoin"
+        path: "/home/vrc/.vericonomy"
+        state: directory
+        owner: "vrc"
+        group: "vrc"
+        mode: "0775"
+      become: true
+      become_user: vrc
+
+    - name: Vericoin Wallet - Create wallet sub directory
+      file:
+        path: "/home/vrc/.vericonomy/vericoin"
         state: directory
         owner: "vrc"
         group: "vrc"
@@ -66,7 +99,7 @@
 
     - name: Vericoin Wallet - Stat vericoin bootstrap
       stat:
-        path: "/home/vrc/.vericoin/blk0001.dat"
+        path: "/home/vrc/.vericonomy/vericoin/blocks"
       register: vericoin_bootstrap
       become: true
       become_user: vrc
@@ -84,7 +117,7 @@
 
     - name: Vericoin Wallet - Download bootstrap
       unarchive:
-        src: https://cdn.vericonomy.com/bootstrap.zip
+        src: https://files.vericonomy.com/vrc/2.0/bootstrap/bootstrap.zip
         dest: /home/vrc/bootstrap
         remote_src: yes
         creates: /home/vrc/bootstrap/bootstrap/blk0001.dat
@@ -95,7 +128,7 @@
     - name: Vericoin Wallet - Copy bootstrap to good directory
       copy:
         src: /home/vrc/bootstrap/bootstrap/
-        dest: /home/vrc/.vericoin/
+        dest: /home/vrc/.vericonomy/vericoin/
         remote_src: yes
         force: yes
       when: vericoin_bootstrap.stat.exists == false
@@ -117,7 +150,7 @@
     - name: Vericoin Wallet - Write Config File
       template:
         src: templates/wallet/vericoin.conf.j2
-        dest: /home/vrc/.vericoin/vericoin.conf
+        dest: /home/vrc/.vericonomy/vericonomy.conf
         owner: vrc
         group: vrc
         mode: '0600'

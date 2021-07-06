@@ -6,3 +6,12 @@ electrumx:
     wallet_password: "{{ electrumx_vrm_wallet_password }}"
     db_directory: /home/vrmelectrumx/database
     coin_name: Verium
+    services: "tcp://:50001,ws://:50002"
+  vrc:
+    wallet_ip: "10.0.0.11"
+    wallet_port: 58683
+    wallet_username: "{{ elecrtumx_vrc_wallet_user }}"
+    wallet_password: "{{ electrumx_vrc_wallet_password }}"
+    db_directory: /home/vrcelectrumx/database
+    coin_name: Vericoin
+    services: "tcp://:50004,ws://:50005"

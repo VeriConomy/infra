@@ -2,4 +2,4 @@ COIN = {{ config.coin_name }}
 DB_DIRECTORY = {{ config.db_directory }}
 DAEMON_URL = {{ config.wallet_username }}:{{ config.wallet_password}}@{{ config.wallet_ip }}
 USERNAME = {{ config.wallet_username }}
-SERVICES=rpc://127.0.0.1:50000,tcp://:50001,ws://:50002
+SERVICES = {{ config.services }}

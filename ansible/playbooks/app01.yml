@@ -13,4 +13,5 @@
         #- matterbridge
         #- slack-vrctipbot
         #- twitter-telegram-vrctipbot
-        - vrm-electrumx
+        #- vrm-electrumx
+        - vrc-electrumx

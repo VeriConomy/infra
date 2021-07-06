@@ -22,6 +22,12 @@ firewall_forwarded_tcp_ports:
   - src_port: 50002
     dest_ip: "10.0.0.2"
     dest_port: 50002
+  - src_port: 50004
+    dest_ip: "10.0.0.2"
+    dest_port: 50004
+  - src_port: 50005
+    dest_ip: "10.0.0.2"
+    dest_port: 50005
     # Wallet
   - src_port: 36988
     dest_ip: "10.0.0.16"

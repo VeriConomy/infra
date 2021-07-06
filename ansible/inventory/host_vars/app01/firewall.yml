@@ -18,3 +18,5 @@ firewall_additional_rules:
   # ELECTRUMX
   - "iptables -t filter -A INPUT -p tcp -s 10.0.0.2 --dport 50001 -j ACCEPT"
   - "iptables -t filter -A INPUT -p tcp -s 10.0.0.2 --dport 50002 -j ACCEPT"
+  - "iptables -t filter -A INPUT -p tcp -s 10.0.0.2 --dport 50004 -j ACCEPT"
+  - "iptables -t filter -A INPUT -p tcp -s 10.0.0.2 --dport 50005 -j ACCEPT"
