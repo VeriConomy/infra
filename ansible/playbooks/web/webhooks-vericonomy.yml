@@ -1,0 +1,8 @@
+- name: Virtual Host - Create webhooks directory
+  file:
+    path: "/home/www/vericonomy/webhooks"
+    state: directory
+    recurse: yes
+    owner: "www-data"
+    group: "www-data"
+    mode: u=rwX,g=rX,o=rX

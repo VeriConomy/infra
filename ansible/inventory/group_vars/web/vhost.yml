@@ -46,7 +46,7 @@ nginx_http_template:
     conf_file_name: "cdn.vericonomy.conf"
     conf_file_location: /etc/nginx/conf.d/
     servers:
-      files:
+      cdn:
         listen:
           listen_http:
             port: 80
@@ -77,3 +77,89 @@ nginx_http_template:
             - location: "~ \\.(zip)$"
               custom_options:
                 - "expires 1d"
+  docs:
+    template_file: http/custom.conf.j2
+    conf_file_name: "docs.vericonomy.conf"
+    conf_file_location: /etc/nginx/conf.d/
+    servers:
+      docs:
+        listen:
+          listen_http:
+            port: 80
+            ssl: false
+        server_name: "docs.vericonomy.com"
+        error_page: /usr/share/nginx/html/error/_site
+        autoindex: true
+        root: "/home/www/vericonomy/docs/build"
+        custom_options:
+          - "disable_symlinks off"
+        web_server:
+          http_demo_conf: false
+          locations:
+            - location: "= /favicon.ico"
+              allows:
+              custom_options:
+                - "log_not_found off"
+                - "access_log off"
+                - "allow all"
+            - location: "~ /\\."
+              custom_options:
+                - "access_log off"
+                - "log_not_found off"
+                - "deny all"
+            - location: "~ \\.(jpg|jpeg|png|gif|ico|css|js|pdf|gz)$"
+              custom_options:
+                - "expires 7d"
+            - location: "~ \\.(zip)$"
+              custom_options:
+                - "expires 1d"
+  webhooks:
+    template_file: http/custom.conf.j2
+    conf_file_name: "webhooks.vericonomy.conf"
+    conf_file_location: /etc/nginx/conf.d/
+    servers:
+      webhooks:
+        listen:
+          listen_http:
+            port: 80
+            ssl: false
+        server_name: "webhooks.vericonomy.com"
+        error_page: /usr/share/nginx/html/error/_site
+        autoindex: false
+        root: "/home/www/vericonomy/webhooks"
+        custom_options:
+          - "disable_symlinks off"
+        web_server:
+          http_demo_conf: false
+          locations:
+            - location: "= /favicon.ico"
+              allows:
+              custom_options:
+                - "log_not_found off"
+                - "access_log off"
+                - "allow all"
+            - location: "~ /\\."
+              custom_options:
+                - "access_log off"
+                - "log_not_found off"
+                - "deny all"
+            - location: "~ \\.(jpg|jpeg|png|gif|ico|css|js|pdf|gz)$"
+              custom_options:
+                - "expires 7d"
+            - location: "~ \\.(zip)$"
+              custom_options:
+                - "expires 1d"
+            - location: "= /"
+              html_file_name: index.html index.php
+            - location: /
+              try_files: "$uri uri/ /index.php?$args =404"
+              html_file_name: index.html index.php
+            - location: "~ \\.php$"
+              custom_options:
+                - "include fastcgi_params"
+                - "fastcgi_intercept_errors on"
+                - "fastcgi_pass unix:{{ php_fpm_listen }}"
+                - "fastcgi_split_path_info ^(.+?\\.php)(/.*)$"
+                - "fastcgi_index index.php"
+                - "fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name"
+                - "include /etc/nginx/fastcgi_params"

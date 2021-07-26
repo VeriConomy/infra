@@ -6,9 +6,8 @@ ln -s /home/www/vericonomy/files/vrm/bootstrap/$VRMLATEST /home/www/vericonomy/f
 find /home/www/vericonomy/files/vrm/bootstrap/ -mtime +4 -exec rm {} \;
 chown -h www-data:www-data /home/www/vericonomy/files/vrm/bootstrap/bootstrap.zip
 
-rsync -e ssh -avz --delete-after --chown=www-data:www-data vrc@10.0.0.10:bootstrap/done/* /home/www/vericonomy/files/vrc/bootstrap
-VRCLATEST=$(cat /home/www/vericonomy/files/vrc/bootstrap/LATEST)
-rm /home/www/vericonomy/files/vrc/bootstrap/bootstrap.zip || true
-find /home/www/vericonomy/files/vrc/bootstrap/ -mtime +4 -exec rm {} \;
-ln -s /home/www/vericonomy/files/vrc/bootstrap/$VRCLATEST /home/www/vericonomy/files/vrc/bootstrap/bootstrap.zip
-chown -h www-data:www-data /home/www/vericonomy/files/vrc/bootstrap/bootstrap.zip
+# Special for ARM
+wget -O /home/www/vericonomy/files/vrm/bootstrap-arm/temp-bootstrap.zip http://vericonomy.derasse.ovh/vrm/bootstrap.zip
+rm /home/www/vericonomy/files/vrm/bootstrap-arm/bootstrap.zip
+mv /home/www/vericonomy/files/vrm/bootstrap-arm/temp-bootstrap.zip /home/www/vericonomy/files/vrm/bootstrap-arm/bootstrap.zip
+chown -h www-data:www-data /home/www/vericonomy/files/vrm/bootstrap-arm/bootstrap.zip

@@ -40,18 +40,35 @@
     state: directory
   become: true
 
-- name: Virtual Host - Copy sync-bootstraps script
+- name: Virtual Host - Copy sync-bootstraps vrm script
   copy:
-    src: files/sync-bootstraps.sh
-    dest: /opt/scripts/sync-bootstraps.sh
+    src: files/sync-bootstraps-vrm.sh
+    dest: /opt/scripts/sync-bootstraps-vrm.sh
     owner: root
     group: root
     mode: '0755'
 
 - name: Webserver - Add rsync vrm bootstrap crontab
   cron:
-    name: Sync Bootstraps
-    job: "/opt/scripts/sync-bootstraps.sh"
+    name: Sync Bootstraps VRM
+    job: "/opt/scripts/sync-bootstraps-vrm.sh"
     minute: "0"
     hour: "7"
+    user: "root"
+
+- name: Virtual Host - Copy sync-bootstraps vrc script
+  copy:
+    src: files/sync-bootstraps-vrc.sh
+    dest: /opt/scripts/sync-bootstraps-vrc.sh
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Webserver - Add rsync vrc bootstrap crontab
+  cron:
+    name: Sync Bootstraps VRC
+    job: "/opt/scripts/sync-bootstraps-vrc.sh"
+    minute: "0"
+    hour: "7"
+    weekday: "6"
     user: "root"

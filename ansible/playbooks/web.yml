@@ -84,9 +84,12 @@
       with_items:
         - cdn-vericonomy
         - files-vericonomy
+        - docs-vericonomy
 
   roles:
     - nginxinc.nginx
+    - geerlingguy.nodejs
+    - geerlingguy.php
 
   post_tasks:
   # Sometime there is a weird issue where nginx doesn't start the first time ...

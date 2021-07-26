@@ -5,7 +5,7 @@ After=syslog.target network.target
 
 [Service]
 ExecStart=/home/vrc/wallet/src/vericoind -pid=/var/run/vericoind/vericoind.pid \
-                                        -conf=/home/vrc/.vericoin/vericoin.conf \
+                                        -conf=/home/vrc/.vericonomy/vericonomy.conf \
                                         -daemon
 
 ExecStop=/home/vrc/wallet/src/vericoind stop

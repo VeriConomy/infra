@@ -1,5 +1,5 @@
 ---
- name: Install VRC Wallet and bootstrap
+- name: Install VRC Wallet and bootstrap
   hosts: wallet_vrc
   become: yes
   tasks:
@@ -43,7 +43,7 @@
         repo: https://github.com/VeriConomy/vericoin.git
         dest: "/home/vrc/wallet"
         update: no
-        version: "master"
+        version: "2.0.0"
       become: true
       become_user: vrc
 
@@ -117,7 +117,7 @@
 
     - name: Vericoin Wallet - Download bootstrap
       unarchive:
-        src: https://files.vericonomy.com/vrc/2.0/bootstrap/bootstrap.zip
+        src: http://files.vericonomy.com/vrc/2.0/bootstrap/bootstrap.zip
         dest: /home/vrc/bootstrap
         remote_src: yes
         creates: /home/vrc/bootstrap/bootstrap/blk0001.dat
@@ -202,5 +202,6 @@
             job: "/home/vrc/scripts/bootstrap.sh >/dev/null 2>&1"
             minute: "0"
             hour: "1"
+            weekday: "0"
             user: "vrc"
       when: bootstrap_generator is defined and bootstrap_generator

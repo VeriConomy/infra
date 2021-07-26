@@ -1,0 +1,10 @@
+- name: Docs - Clone the repository
+  git:
+    repo: "https://github.com/VeriConomy/docs.git"
+    dest: "/home/www/vericonomy/docs"
+    update: yes
+    force: true
+  register: git_clone
+  become: true
+  become_user: "www-data"
+

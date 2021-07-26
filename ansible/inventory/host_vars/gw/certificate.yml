@@ -15,6 +15,8 @@ certbot_certs:
     - "slack.vericonomy.com"
     - "files.vericonomy.com"
     - "cdn.vericonomy.com"
+    - "docs.vericonomy.com"
+    - "webhooks.vericonomy.com"
   # vericoin migration domain
   - domains:
     - "veriumstats.vericoin.info"

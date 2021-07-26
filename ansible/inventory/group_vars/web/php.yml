@@ -1,0 +1,25 @@
+php_date_timezone: "Europe/Paris"
+php_enable_webserver: false
+php_webserver_daemon: "nginx"
+php_enable_php_fpm: true
+php_default_version_debian: "7.4"
+php_fpm_pool_user: www-data
+php_fpm_pool_group: www-data
+php_fpm_listen: "/run/php/php{{ php_default_version_debian }}-fpm.sock"
+php_fpm_pm_max_children: 50
+php_fpm_pm_start_servers: 5
+php_fpm_pm_min_spare_servers: 5
+php_fpm_pm_max_spare_servers: 5
+php_expose_php: "Off"
+php_packages_extra:
+- "php{{ php_default_version_debian }}-mysql"
+- "php{{ php_default_version_debian }}-redis"
+- "php-mbstring"
+- "php-imagick"
+php_upload_max_filesize: "16G"
+php_max_file_uploads: "20"
+php_memory_limit: "1024M"
+php_max_execution_time: "3600"
+php_max_input_time: "3600"
+php_max_input_vars: "1000"
+php_post_max_size: "16G"
