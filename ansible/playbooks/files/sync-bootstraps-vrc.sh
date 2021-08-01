@@ -1,6 +1,6 @@
 #!/bin/bash
 rsync -e ssh -avz --delete-after --chown=www-data:www-data vrc@10.0.0.10:bootstrap/done/* /home/www/vericonomy/files/vrc/2.0/bootstrap
-VRCLATEST=$(cat /home/www/vericonomy/files/vrc/bootstrap/LATEST)
+VRCLATEST=$(cat /home/www/vericonomy/files/vrc/2.0/bootstrap/LATEST)
 rm /home/www/vericonomy/files/vrc/2.0/bootstrap/bootstrap.zip || true
 find /home/www/vericonomy/files/vrc/2.0/bootstrap/ -mtime +4 -exec rm {} \;
 ln -s /home/www/vericonomy/files/vrc/2.0/bootstrap/$VRCLATEST /home/www/vericonomy/files/vrc/2.0/bootstrap/bootstrap.zip
