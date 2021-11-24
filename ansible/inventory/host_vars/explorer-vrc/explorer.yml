@@ -7,7 +7,7 @@ explorer:
   coin:
     name: "Vericoin"
     symbol: "VRC"
-    min_confirmations: 10
+    min_confirmations: 50
     type: "PoST"
     github: "https://github.com/VeriConomy"
     telegram: "https://t.me/VeriCoinandVerium/"
